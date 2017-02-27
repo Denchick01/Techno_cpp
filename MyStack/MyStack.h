@@ -14,14 +14,12 @@
 
 #include <iostream>
 #include <cassert>
-#include <map>
 
-#define DEBUG_SET 1; 
-#define NULL_PTR 1;
-#define OVER_SIZE 2;
-#define NEGATIVE_SIZE 4;
+#define NULL_PTR 1
+#define OVER_SIZE 2
+#define NEGATIVE_SIZE 4
 #define MESSAGE(str) \
-	std::cerr << "file: " << __FILE__ << "line: " << __LINE__ << str << std::endl;
+	std::cerr << "file: " << __FILE__ << " line: " << __LINE__ << "  "<<str << std::endl;
 
 ///Класс MyStack
 template <typename T>	
@@ -35,7 +33,7 @@ public:
 
 	MyStack(size_type = 15); 			///< Дефолтный конструктор класса MyStack
 	MyStack( const MyStack<value_type>& );		///< Копирующей конструктор
-	~MyStack					///< Деструктор
+	~MyStack();					///< Деструктор
 	
 
 	inline void pop();				///< Удаление верхнего элемента
@@ -57,7 +55,7 @@ private:
 	inline void stk_dump(const char*, int, int) const; ///< Дампер
 	void resize(size_type);                         ///< Изменение размеров стека
 		
-}
+};
 
 
 /*! 
@@ -67,8 +65,8 @@ private:
 
 */
 template <typename T>
-MyStack<value_type>::MyStack(size_type initial_size) :
-	m_stk_size{intial_size}, m_stk_top{0} 	
+MyStack<T>::MyStack(size_t initial_size) :
+	m_stk_size{initial_size}, m_stk_top{0} 	
 {
     	m_stk_ptr = new value_type[initial_size]; 
 
@@ -86,7 +84,7 @@ MyStack<value_type>::MyStack(size_type initial_size) :
 	будет произведено копирование этого объекта
 */
 template <typename T>
-MyStack<value_type>::MyStack(const MyStack<value_type>& other) :
+MyStack<T>::MyStack(const MyStack<T>& other) :
 	m_stk_top{other.size()}
 {
 	m_stk_ptr = new value_type[sizeof(other)]; 
@@ -107,7 +105,7 @@ MyStack<value_type>::MyStack(const MyStack<value_type>& other) :
 
 */
 template <typename T>
-MyStack<value_type>::~Mystack()
+MyStack<T>::~MyStack()
 {
 	delete [] m_stk_ptr;
 
@@ -120,15 +118,18 @@ MyStack<value_type>::~Mystack()
 	\brief Удаление верхнего элемента
 */
 template <typename T>
-inline void MyStack<value_type>::pop()
+inline void MyStack<T>::pop()
 {
 	#if DEBUG_SET
  	stk_verifier(NULL_PTR | OVER_SIZE | NEGATIVE_SIZE, "pop", __LINE__);
  	#endif
 
+	if (m_stk_top == 0)
+		assert(!"stack is empty!!!");
+
 	if (m_stk_size > (m_stk_top * 4))
 		resize(m_stk_top * 2);
-
+	
 	m_stk_ptr[--m_stk_top] = 0;
 
 	#if DEBUG_SET
@@ -141,7 +142,7 @@ inline void MyStack<value_type>::pop()
 	\param[in] Новый элемент стека	
 */
 template <typename T>
-inline void MyStack<value_type>::push(const value_type& value)
+inline void MyStack<T>::push(const T& value)
 {
 	#if DEBUG_SET
 	stk_verifier(NULL_PTR | OVER_SIZE | NEGATIVE_SIZE, "push", __LINE__);
@@ -162,7 +163,7 @@ inline void MyStack<value_type>::push(const value_type& value)
 	\param[in] объект типа  MyStack
 */
 template <typename T>
-void MyStack<value_type>::swap( const MyStack<value_type>& other) 
+void MyStack<T>::swap( const MyStack<T>& other) 
 {
 	#if DEBUG_SET
 	stk_verifier(NULL_PTR | OVER_SIZE | NEGATIVE_SIZE, "swap", __LINE__);
@@ -188,7 +189,7 @@ void MyStack<value_type>::swap( const MyStack<value_type>& other)
 	\return Размер стека
 */
 template <typename T>
-size_type MyStack<value_type>::size() const
+size_t MyStack<T>::size() const
 {
 	#if DEBUG_SET
 	stk_verifier(NULL_PTR | OVER_SIZE | NEGATIVE_SIZE, "size", __LINE__);
@@ -202,13 +203,13 @@ size_type MyStack<value_type>::size() const
 	\return True if size > 0 else false
 */
 template <typename T>
-bool MyStack<value_type>::empty() const
+bool MyStack<T>::empty() const
 {
 	#if DEBUG_SET
 	stk_verifier(NULL_PTR | OVER_SIZE | NEGATIVE_SIZE, "empty", __LINE__);
 	#endif
 
-	return m_stk_top > 0;
+	return !(m_stk_top > 0);
 }
 /*!
 	\brief Доступ к Верхнему элементу для константного объекта
@@ -216,13 +217,13 @@ bool MyStack<value_type>::empty() const
 	\return Ссылка на верхний последний элемент
 */
 template <typename T>
-inline const_referens MyStack<value_type>::top() const
+inline const T&  MyStack<T>::top() const
 {
 	#if DEBUG_SET
 	stk_verifier(NULL_PTR | OVER_SIZE | NEGATIVE_SIZE, "top", __LINE__);
 	#endif            
 
-	return &m_stk_ptr[m_stk_top - 1];
+	return m_stk_ptr[m_stk_top - 1];
 }
 
 /*!
@@ -231,13 +232,13 @@ inline const_referens MyStack<value_type>::top() const
 	\return Ссылка на верхний последний элемент
 */
 template <typename T>
-inline referens MyStack<value_type>::top()
+inline T& MyStack<T>::top()
 {
 	#if DEBUG_SET
 	stk_verifier(NULL_PTR | OVER_SIZE | NEGATIVE_SIZE, "top", __LINE__);
 	#endif            
 
-	return &m_stk_ptr[m_stk_top - 1];
+	return m_stk_ptr[m_stk_top - 1];
 }
 /*! 
 	\brief Взятие произвольного элемента стека для константного объекта
@@ -247,13 +248,13 @@ inline referens MyStack<value_type>::top()
 	\return Ссылка на объект
 */
 template <typename T>
-const_referens MyStack<value_type>::take_any(size_type it) const
+const T& MyStack<T>::take_any(size_t it) const
 {
 	#if DEBUG_SET
 	stk_verifier(NULL_PTR | OVER_SIZE | NEGATIVE_SIZE, "take_any", __LINE__);
 	#endif
 
-	return &m_stk_ptr[it];
+	return m_stk_ptr[it];
 }
 /*! 
 	\brief Взятие произвольного элемента стека для не константного объекта
@@ -263,24 +264,24 @@ const_referens MyStack<value_type>::take_any(size_type it) const
 	\return Ссылка на объект
 */
 template <typename T>
-referens MyStack<value_type>::take_any(size_type it)
+T& MyStack<T>::take_any(size_t it)
 {
 	#if DEBUG_SET
 	stk_verifier(NULL_PTR | OVER_SIZE | NEGATIVE_SIZE, "take_any", __LINE__);
 	#endif
 
-	return &m_stk_ptr[it];
+	return m_stk_ptr[it];
 }
 /*!
 	\brief Вывод структуры стека на экран
 */
 template <typename T>
-void MyStack<value_type>::show_stk() const 
+void MyStack<T>::show_stk() const 
 {
 	std::cout << "MyStack\n\t{\n";
 	std::cout << "\tКоличество элементов: " << m_stk_top << "\n";
 	std::cout << "\tОбъем памяти выделенной под стек: " << m_stk_size << "\n";
-	std::cout << "\tMyStack[" << m_stk_top << "]:\n\t\t{\n"
+	std::cout << "\tMyStack[" << m_stk_top << "]:\n\t\t{\n";
 
 	for (size_type i = 0; i < m_stk_top; i++) 
 		std::cout << "\t\t[" << i << "] = " << m_stk_ptr[i] << "\n";
@@ -303,7 +304,7 @@ void MyStack<value_type>::show_stk() const
 
 */
 template <typename T>
-inline void MyStack<value_type>::stk_verifier(int flags, const char* func_name, int line) const
+inline void MyStack<T>::stk_verifier(int flags, const char* func_name, int line) const
 {
 	if (flags & NULL_PTR) {	
 		if (m_stk_ptr == NULL) {
@@ -334,18 +335,25 @@ inline void MyStack<value_type>::stk_verifier(int flags, const char* func_name, 
 	\param[in] line номер строки, которая вызвала верификатор
 */
 template <typename T>
-inline void MyStack<value_type>::stk_dump(const char* func_name, int line , int err_f) const
+inline void MyStack<T>::stk_dump(const char* func_name, int line , int err_f) const
 {
-	std::map<int, char> message_err = {
-		{NULL_PTR, "m_stk_ptr == NULL\n"},
-		{OVER_SIZE, "m_stk_top > m_stk_size\n"},
-		{NEGATIVE_SIZE, "m_stk_top < 0\n"}
-	};
 
 	std::cerr << "FILE: " << __FILE__ ;
 	std::cerr <<  "ERROR: LINE: " << line;
 	std::cerr << "FUNCTION: " << func_name << "\n";
-	std::cerr << message_err[err_f] << "\n";
+
+	switch (err_f) {
+		case NULL_PTR:
+		std::cerr << "m_stk_ptr == NULL\n";
+		break;
+		case OVER_SIZE:
+		std::cerr << "m_stk_top > m_stk_size\n";
+		break;
+		case NEGATIVE_SIZE:
+		std::cerr << "m_stk_top < 0\n";
+		break;
+	}
+
 	show_stk();
 }
 
@@ -355,12 +363,12 @@ inline void MyStack<value_type>::stk_dump(const char* func_name, int line , int 
 	\param[in] Новый размер стека
 */
 template <typename T>			
-void MyStack<value_type>::resize(size_type new_size)
+void MyStack<T>::resize(size_t new_size)
 {
 	value_type* old_stk_ptr = m_stk_ptr;
 	m_stk_size = new_size;
 
-	m_stk_ptr = new value_type[size_type];
+	m_stk_ptr = new value_type[new_size];
 	
 	#if DEBUG_SET
 	stk_verifier(NULL_PTR, "resize", __LINE__);
@@ -375,6 +383,4 @@ void MyStack<value_type>::resize(size_type new_size)
 	stk_verifier(NULL_PTR | OVER_SIZE | NEGATIVE_SIZE, "resize", __LINE__);
 	#endif
 }
-
-
 
