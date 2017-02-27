@@ -71,7 +71,7 @@ MyStack<T>::MyStack(size_t initial_size) :
     	m_stk_ptr = new value_type[initial_size]; 
 
     	#if DEBUG_SET
-	stk_verifier(NULL_PTR, "D_MyStack", __LINE__);
+	stk_verifier(NULL_PTR, "C_MyStack", __LINE__);
 	#endif
 }
 
@@ -90,7 +90,7 @@ MyStack<T>::MyStack(const MyStack<T>& other) :
 	m_stk_ptr = new value_type[sizeof(other)]; 
 
 	#if DEBUG_SET
- 	stk_verifier(NULL_PTR, "D_MyStack", __LINE__);
+ 	stk_verifier(NULL_PTR, "CC_MyStack", __LINE__);
  	#endif
 	
 	swap(other);
@@ -335,22 +335,22 @@ inline void MyStack<T>::stk_verifier(int flags, const char* func_name, int line)
 	\param[in] line номер строки, которая вызвала верификатор
 */
 template <typename T>
-inline void MyStack<T>::stk_dump(const char* func_name, int line , int err_f) const
+inline void MyStack<T>::stk_dump(const char* func_name, int err_f , int line) const
 {
 
-	std::cerr << "FILE: " << __FILE__ ;
-	std::cerr <<  "ERROR: LINE: " << line;
-	std::cerr << "FUNCTION: " << func_name << "\n";
+	std::cerr << " FILE: " << __FILE__ ;
+	std::cerr <<  " ERROR: LINE: " << line;
+	std::cerr << " FUNCTION: " << func_name << "\n";
 
 	switch (err_f) {
 		case NULL_PTR:
-		std::cerr << "m_stk_ptr == NULL\n";
+		std::cerr << " m_stk_ptr == NULL\n";
 		break;
 		case OVER_SIZE:
-		std::cerr << "m_stk_top > m_stk_size\n";
+		std::cerr << " m_stk_top > m_stk_size\n";
 		break;
 		case NEGATIVE_SIZE:
-		std::cerr << "m_stk_top < 0\n";
+		std::cerr << " m_stk_top < 0\n";
 		break;
 	}
 
