@@ -55,7 +55,7 @@ void all_tests (const std::string& type_str)
 	test_v.clear();
 
 ///Тест функции size
-	simple_test<size_t, size_t> (test_0.size(), size_i, "test: size");
+	simple_test<size_t, size_t> (test_0.size(), size_i + 1, "test: size");
 	
 ///Тест функции swap и take_any
 
