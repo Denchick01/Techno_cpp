@@ -21,6 +21,7 @@
 #define MESSAGE(str) \
 	std::cerr << "file: " << __FILE__ << " line: " << __LINE__ << "  "<<str << std::endl;
 
+
 ///Класс MyStack
 template <typename T>	
 class MyStack
