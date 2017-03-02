@@ -44,7 +44,7 @@ void all_tests (const std::string& type_str)
 	
 ///Тест функции push и top
 
-	for  (size_t i = 0; i < 1000; i++) {
+	for  (size_t i = 0; i < 1000000; i++) {
 		test_0.push(i);
 		refer_v.push_back(i);
 		test_v.push_back(test_0.top());
