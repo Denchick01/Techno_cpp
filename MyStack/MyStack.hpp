@@ -22,11 +22,14 @@ template <typename T>
 MyStack<T>::MyStack(size_t initial_size) :
 	m_stk_size{initial_size}, m_stk_top{0} 	
 {
-    	m_stk_ptr = new value_type[initial_size]; 
-
-    	#if DEBUG_SET
-	stk_verifier(NULL_PTR, "C_MyStack", __LINE__);
-	#endif
+	ASSERT_OK("MyStack()")
+	try {  
+		m_stk_ptr = new value_type[initial_size];
+   	}  
+   	catch(std::bad_alloc& e) {  
+		MESSAGE(e.what(), std::cerr)
+   	}    
+	ASSERT_OK("MyStack()")
 }
 
 /*! 
@@ -39,19 +42,18 @@ MyStack<T>::MyStack(size_t initial_size) :
 */
 template <typename T>
 MyStack<T>::MyStack(const MyStack<T>& other) :
-	m_stk_top{other.size()}
+	m_stk_top{other.m_stk_top}, m_stk_size{other.m_stk_size}
 {
-	m_stk_ptr = new value_type[sizeof(other)]; 
-
-	#if DEBUG_SET
- 	stk_verifier(NULL_PTR, "CC_MyStack", __LINE__);
- 	#endif
-	
+	ASSERT_OK("MyStack()")
+	try {
+		m_stk_ptr = new value_type[sizeof(other.m_stk_size)]; 
+	}
+	catch (std::bad_alloc& e) {
+		MESSAGE(e.what(), std::cerr)
+	}
 	swap(other);
+	ASSERT_OK("MyStack()")
 
-	#if DEBUG_SET
-	stk_verifier(NULL_PTR | OVER_SIZE | NEGATIVE_SIZE, "D_MyStack", __LINE__);
-	#endif
 }
 
 /*!
@@ -62,10 +64,7 @@ template <typename T>
 MyStack<T>::~MyStack()
 {
 	delete [] m_stk_ptr;
-
-	#if DEBUG_SET
-	MESSAGE("Destructor is complete!")
-	#endif
+	MESSAGE("Destructor is complete!", std::cout)
 }
 
 /*!
@@ -74,21 +73,18 @@ MyStack<T>::~MyStack()
 template <typename T>
 inline void MyStack<T>::pop()
 {
-	#if DEBUG_SET
- 	stk_verifier(NULL_PTR | OVER_SIZE | NEGATIVE_SIZE, "pop", __LINE__);
- 	#endif
 
-	if (m_stk_top == 0)
-		assert(!"stack is empty!!!");
-
-	if (m_stk_size > (m_stk_top * 4))
-		resize(m_stk_top * 2);
-	
+	ASSERT_OK("pop()")
+	try {
+		if (m_stk_top == 0)
+			throw "Error: Stack is epmty!!!";
+	}
+	catch (const char* str) {
+		MESSAGE(str, std::cerr)
+		assert(!"Error: Stack is epmty!!!");
+	}
 	m_stk_ptr[--m_stk_top] = 0;
-
-	#if DEBUG_SET
-	stk_verifier(NULL_PTR | OVER_SIZE | NEGATIVE_SIZE, "pop", __LINE__);
-	#endif
+	ASSERT_OK("pop()")
 }
 /*!
 	\brief Добавление элемента
@@ -98,18 +94,12 @@ inline void MyStack<T>::pop()
 template <typename T>
 inline void MyStack<T>::push(const T& value)
 {
-	#if DEBUG_SET
-	stk_verifier(NULL_PTR | OVER_SIZE | NEGATIVE_SIZE, "push", __LINE__);
-	#endif
-	
+	ASSERT_OK("push()")
 	if (m_stk_top == m_stk_size)
 		resize(m_stk_size * 2);
 
 	m_stk_ptr[m_stk_top++] = value;
-
-	#if DEBUG_SET
-	stk_verifier(NULL_PTR | OVER_SIZE | NEGATIVE_SIZE, "push", __LINE__);
-	#endif				
+	ASSERT_OK("push()")
 }
 /*! 
 	\brief Копирование содержимого 
@@ -119,23 +109,17 @@ inline void MyStack<T>::push(const T& value)
 template <typename T>
 void MyStack<T>::swap( const MyStack<T>& other) 
 {
-	#if DEBUG_SET
-	stk_verifier(NULL_PTR | OVER_SIZE | NEGATIVE_SIZE, "swap", __LINE__);
-	#endif
+	ASSERT_OK("push()")
+	if (m_stk_size < other.m_stk_top)
+		resize(other.m_stk_top * 2);
+	else if (m_stk_size > (other.m_stk_top * 2))
+		resize(other.m_stk_top * 2);
 
-	if (m_stk_size < other.size())
-		resize(other.size() * 2);
-	else if (m_stk_size > (other.size() * 2))
-		resize(other.size() * 2);
-
-	m_stk_top = other.size();
+	m_stk_top = other.m_stk_top;
 
 	for (size_type i = 0; i < m_stk_top; i++)
-		m_stk_ptr[i] = other.take_any(i);
-
-	#if DEBUG_SET
-	stk_verifier(NULL_PTR | OVER_SIZE | NEGATIVE_SIZE, "swap", __LINE__);
-	#endif
+		m_stk_ptr[i] = other.m_stk_ptr[i];
+	ASSERT_OK("push()")
 }
 /*!
 	\brief	 Количество элементов стека	
@@ -145,10 +129,7 @@ void MyStack<T>::swap( const MyStack<T>& other)
 template <typename T>
 size_t MyStack<T>::size() const
 {
-	#if DEBUG_SET
-	stk_verifier(NULL_PTR | OVER_SIZE | NEGATIVE_SIZE, "size", __LINE__);
-	#endif
-
+	ASSERT_OK("size()")
 	return m_stk_top;
 }
 /*!
@@ -159,11 +140,8 @@ size_t MyStack<T>::size() const
 template <typename T>
 bool MyStack<T>::empty() const
 {
-	#if DEBUG_SET
-	stk_verifier(NULL_PTR | OVER_SIZE | NEGATIVE_SIZE, "empty", __LINE__);
-	#endif
-
-	return !(m_stk_top > 0);
+	ASSERT_OK("emty()")
+	return m_stk_top == 0;
 }
 /*!
 	\brief Доступ к Верхнему элементу для константного объекта
@@ -173,10 +151,7 @@ bool MyStack<T>::empty() const
 template <typename T>
 inline const T&  MyStack<T>::top() const
 {
-	#if DEBUG_SET
-	stk_verifier(NULL_PTR | OVER_SIZE | NEGATIVE_SIZE, "top", __LINE__);
-	#endif            
-
+	ASSERT_OK("top()")
 	return m_stk_ptr[m_stk_top - 1];
 }
 
@@ -188,43 +163,8 @@ inline const T&  MyStack<T>::top() const
 template <typename T>
 inline T& MyStack<T>::top()
 {
-	#if DEBUG_SET
-	stk_verifier(NULL_PTR | OVER_SIZE | NEGATIVE_SIZE, "top", __LINE__);
-	#endif            
-
+	ASSERT_OK("top()")
 	return m_stk_ptr[m_stk_top - 1];
-}
-/*! 
-	\brief Взятие произвольного элемента стека для константного объекта
-
-	\param[in] Индекс элемента
-	
-	\return Ссылка на объект
-*/
-template <typename T>
-const T& MyStack<T>::take_any(size_t it) const
-{
-	#if DEBUG_SET
-	stk_verifier(NULL_PTR | OVER_SIZE | NEGATIVE_SIZE, "take_any", __LINE__);
-	#endif
-
-	return m_stk_ptr[it];
-}
-/*! 
-	\brief Взятие произвольного элемента стека для не константного объекта
-
-	\param[in] Индекс элемента	
-	
-	\return Ссылка на объект
-*/
-template <typename T>
-T& MyStack<T>::take_any(size_t it)
-{
-	#if DEBUG_SET
-	stk_verifier(NULL_PTR | OVER_SIZE | NEGATIVE_SIZE, "take_any", __LINE__);
-	#endif
-
-	return m_stk_ptr[it];
 }
 /*!
 	\brief Вывод структуры стека на экран
@@ -244,69 +184,32 @@ void MyStack<T>::show_stk() const
 }
 /*!
 	\brief Верификатор
-
-	\param[in] flags В качестве входного параметра выступает целочисленное значение,
-		которое в битовом представление является набором флагов, сигнализирующих 
-		о необходимости верификации определенных состояний стека, в частности
-		бит 0 = 1 - проверка указателя стека на NULL
-		бит 1 = 1 - проверка на выход стека за выделенную область памяти
-		бит 2 = 1 - проверка на отрицательный индекс
-
-	\param[in] func_name Имя функции, которая вызвала верификатор 
-
-	\param[in] line номер строки, которая вызвала верификатор
-
 */
 template <typename T>
-inline void MyStack<T>::stk_verifier(int flags, const char* func_name, int line) const
+bool MyStack<T>::v_ok() const
 {
-	if (flags & NULL_PTR) {	
-		if (m_stk_ptr == NULL) {
-			stk_dump(func_name, NULL_PTR, line);	
-			assert(!"null pointer");
-		}
-	}		
-	if (flags & OVER_SIZE) {
-		if (m_stk_top > m_stk_size) {
-			stk_dump(func_name, OVER_SIZE, line);
-			assert(!"over size");
-		}
-	}
-	if (flags & NEGATIVE_SIZE) {
-		if (m_stk_top < 0) {
-			stk_dump(func_name, OVER_SIZE, line);
-			assert(!"negative size");
-		}
-	}
+	if (m_stk_top > m_stk_size)
+		return false;
+	if (m_stk_top < 0) 
+		return false;
+	return true;
 } 
 /*!
 	\brief Дампер
 	
 	\param[in] func_name Имя функции, которая вызвала верификатор
 
-	\param[in] err_f Номер ошибки
+	\param[in] file_name Имя файла
 
 	\param[in] line номер строки, которая вызвала верификатор
 */
 template <typename T>
-inline void MyStack<T>::stk_dump(const char* func_name, int err_f , int line) const
+inline void MyStack<T>::stk_dump(const char* file_name, int line ,const char* func_name) const
 {
 
 	std::cerr << " FILE: " << __FILE__ ;
 	std::cerr <<  " ERROR: LINE: " << line;
 	std::cerr << " FUNCTION: " << func_name << "\n";
-
-	switch (err_f) {
-		case NULL_PTR:
-		std::cerr << " m_stk_ptr == NULL\n";
-		break;
-		case OVER_SIZE:
-		std::cerr << " m_stk_top > m_stk_size\n";
-		break;
-		case NEGATIVE_SIZE:
-		std::cerr << " m_stk_top < 0\n";
-		break;
-	}
 
 	show_stk();
 }
@@ -322,19 +225,19 @@ void MyStack<T>::resize(size_t new_size)
 	value_type* old_stk_ptr = m_stk_ptr;
 	m_stk_size = new_size;
 
-	m_stk_ptr = new value_type[new_size];
-	
-	#if DEBUG_SET
-	stk_verifier(NULL_PTR, "resize", __LINE__);
-	#endif
+	ASSERT_OK("resize()")
+	try {
+		m_stk_ptr = new value_type[new_size];
+	}
+	catch(std::bad_alloc& e) {
+		MESSAGE(e.what(), std::cerr)
+ 	}
+	ASSERT_OK("resize()")	
 
 	for (size_type i = 0; i < m_stk_top; i++)
 		m_stk_ptr[i] = old_stk_ptr[i];
 	
 	delete [] old_stk_ptr;	
-
-	#if DEBUG_SET
-	stk_verifier(NULL_PTR | OVER_SIZE | NEGATIVE_SIZE, "resize", __LINE__);
-	#endif
+	ASSERT_OK("resize()") 
 }
 

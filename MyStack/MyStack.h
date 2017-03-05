@@ -15,11 +15,18 @@
 #include <iostream>
 #include <cassert>
 
-#define NULL_PTR 1
-#define OVER_SIZE 2
-#define NEGATIVE_SIZE 4
-#define MESSAGE(str) \
-	std::cerr << "file: " << __FILE__ << " line: " << __LINE__ << "  "<<str << std::endl;
+#if DEBUG_SET
+	#define MESSAGE(str, stream) \
+		stream << "file: " << __FILE__ << " line: " << __LINE__ << "  "<< str << std::endl;
+	#define ASSERT_OK(func_name) 				\
+		if (!v_ok()) {					\
+			stk_dump(__FILE__, __LINE__, func_name);\
+			assert(!"Object is OK"); 		\
+		}
+#else
+	#define ASSERT_OK(func_name) 
+	#define MESSAGE(str, stream)
+#endif
 
 
 ///Класс MyStack
@@ -44,17 +51,14 @@ public:
 	bool empty() const;				///< Проверка наличия элементов
 	inline const_referens top() const; 		///< Доступ к Верхнему элементу для константного объекта
 	inline referens top();				///< Доступ к Верхнему элементу для не константного объекта
-	const_referens take_any( size_type ) const;	///< Взятие произвольного элемента стека для константного объекта
-	referens take_any( size_type );			///< Взятие произвольного элемента стека для не константного объекта
+	void resize(size_type);                         ///< Изменение размеров стека
 	void show_stk() const;				///< Вывод структуры стека на экран
-
 private:
-	size_type m_stk_size;				///< Размер стека
+	size_type m_stk_size;                           ///< Размер стека
 	size_type m_stk_top;				///< Индекс на позицию за последним элементом
 	value_type* m_stk_ptr;				///< Указатель на стек
-	inline void stk_verifier(int, const char*, int) const;	///< Верификатор
-	inline void stk_dump(const char*, int, int) const; ///< Дампер
-	void resize(size_type);                         ///< Изменение размеров стека
+	bool v_ok() const;				///< Верификатор
+	inline void stk_dump(const char*, int, const char*) const; ///< Дампер
 		
 };
 

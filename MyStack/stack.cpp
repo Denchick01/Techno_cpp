@@ -62,11 +62,15 @@ void all_tests (const std::string& type_str)
 
 	test_1.swap(test_0);
 
-	for  (size_t i = 0; i < test_0.size(); i++) {
-		test_v.push_back(test_0.take_any(i));
-		refer_v.push_back(test_1.take_any(i));
+	for  (size_t i = test_0.size(); i > 0 ; --i) {
+		test_v.push_back(test_0.top());
+		refer_v.push_back(test_1.top());
+		if (i == 1)
+			break;
+		test_1.pop();
+		test_0.pop();
 	}
- 	Test<T, T> (test_v, refer_v, "test: swap & take_any");
+	Test<T, T> (test_v, refer_v, "test: swap & take_any");
 
 	std::cout << "\tALL_TESTS " << type_str <<" TYPE END!\n\n";
 }
