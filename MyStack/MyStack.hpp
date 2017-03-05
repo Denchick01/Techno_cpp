@@ -12,6 +12,19 @@
 
 */
 
+/*!
+	\brief Оператор присваивания 
+*/
+template <typename T>
+MyStack<T>& MyStack<T>::operator = (const MyStack& other)
+{
+	ASSERT_OK("operator =")
+ 	copy(other);
+ 	ASSERT_OK("MyStack()")
+	return *this;	
+}	
+
+
 /*! 
 	\brief	Конструктор
  
@@ -28,6 +41,7 @@ MyStack<T>::MyStack(size_t initial_size) :
    	}  
    	catch(std::bad_alloc& e) {  
 		MESSAGE(e.what(), std::cerr)
+		assert(!"ERROR: bad alloc");
    	}    
 	ASSERT_OK("MyStack()")
 }
@@ -45,13 +59,7 @@ MyStack<T>::MyStack(const MyStack<T>& other) :
 	m_stk_top{other.m_stk_top}, m_stk_size{other.m_stk_size}
 {
 	ASSERT_OK("MyStack()")
-	try {
-		m_stk_ptr = new value_type[sizeof(other.m_stk_size)]; 
-	}
-	catch (std::bad_alloc& e) {
-		MESSAGE(e.what(), std::cerr)
-	}
-	swap(other);
+	copy(other);
 	ASSERT_OK("MyStack()")
 
 }
@@ -107,19 +115,24 @@ inline void MyStack<T>::push(const T& value)
 	\param[in] объект типа  MyStack
 */
 template <typename T>
-void MyStack<T>::swap( const MyStack<T>& other) 
+void MyStack<T>::copy( const MyStack<T>& other) 
 {
-	ASSERT_OK("push()")
-	if (m_stk_size < other.m_stk_top)
-		resize(other.m_stk_top * 2);
-	else if (m_stk_size > (other.m_stk_top * 2))
-		resize(other.m_stk_top * 2);
+	ASSERT_OK("copy()")
+	delete [] m_stk_ptr;
 
 	m_stk_top = other.m_stk_top;
+	m_stk_size = other.m_stk_size;
 
-	for (size_type i = 0; i < m_stk_top; i++)
+	try {
+ 		m_stk_ptr = new value_type[sizeof(value_type) * other.m_stk_size];
+ 	}
+ 	catch (std::bad_alloc& e) {
+ 		MESSAGE(e.what(), std::cerr)
+		assert(!"ERROR: bad alloc");
+ 	}
+	for (size_type i = 0; i < m_stk_top; ++i)
 		m_stk_ptr[i] = other.m_stk_ptr[i];
-	ASSERT_OK("push()")
+	ASSERT_OK("copy()")
 }
 /*!
 	\brief	 Количество элементов стека	
@@ -140,7 +153,7 @@ size_t MyStack<T>::size() const
 template <typename T>
 bool MyStack<T>::empty() const
 {
-	ASSERT_OK("emty()")
+	ASSERT_OK("empty()")
 	return m_stk_top == 0;
 }
 /*!
@@ -152,6 +165,14 @@ template <typename T>
 inline const T&  MyStack<T>::top() const
 {
 	ASSERT_OK("top()")
+	try {
+		if (m_stk_top == 0)
+			throw "Error: Stack is epmty!!!";
+	}
+	catch (const char* str) {
+		MESSAGE(str, std::cerr)
+		assert(!"Error: Stack is epmty!!!");
+	}
 	return m_stk_ptr[m_stk_top - 1];
 }
 
@@ -164,6 +185,14 @@ template <typename T>
 inline T& MyStack<T>::top()
 {
 	ASSERT_OK("top()")
+	try {
+		if (m_stk_top == 0)
+			throw "Error: Stack is epmty!!!";
+	}
+	catch (const char* str) {
+		MESSAGE(str, std::cerr)
+		assert(!"Error: Stack is epmty!!!");
+	}
 	return m_stk_ptr[m_stk_top - 1];
 }
 /*!
@@ -231,6 +260,7 @@ void MyStack<T>::resize(size_t new_size)
 	}
 	catch(std::bad_alloc& e) {
 		MESSAGE(e.what(), std::cerr)
+		assert(!"ERROR: bad alloc");
  	}
 	ASSERT_OK("resize()")	
 

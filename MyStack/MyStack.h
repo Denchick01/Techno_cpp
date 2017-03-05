@@ -11,7 +11,7 @@
 	В данном классе реализуется механизм хранения данных типа FILO
 
 */
-
+#include <new>
 #include <iostream>
 #include <cassert>
 
@@ -42,11 +42,12 @@ public:
 	MyStack(size_type = 15); 			///< Дефолтный конструктор класса MyStack
 	MyStack( const MyStack<value_type>& );		///< Копирующей конструктор
 	~MyStack();					///< Деструктор
-	
 
+ 	MyStack& operator = (const MyStack& ); 		///< Оператор присваивания
+	
 	inline void pop();				///< Удаление верхнего элемента
 	inline void push( const value_type& );		///< Добавление элемента
-	void swap( const MyStack<value_type>& );	///< Копирование содержимого
+	void copy( const MyStack<value_type>& );	///< Копирование содержимого
 	size_type size() const;				///< Количество элементов стека
 	bool empty() const;				///< Проверка наличия элементов
 	inline const_referens top() const; 		///< Доступ к Верхнему элементу для константного объекта
