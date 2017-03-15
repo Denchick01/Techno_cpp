@@ -16,8 +16,10 @@
 #include <new>
 #include <iostream>
 #include <stdexcept>
-#include <caccert>
+#include <cassert>
+#include <cmath>
 #include "my_macro.h"
+
 
 /*!
     \brief Класс MyVector
@@ -51,7 +53,7 @@ public:
   
         \param[in] Начальный размер вектора
     */
-    explicit MyVector(size_type, const value_tupe&) throw (std::bad_alloc);                       
+    explicit MyVector(size_type, const value_type&) throw (std::bad_alloc);                       
     /*! 
         \brief Копирующей конструктор                                      +++
         
@@ -65,7 +67,7 @@ public:
         \param[in] объект типа  MyVector
         
     */	
-    MyVector( Myvector<value_type>&& );	
+    MyVector( MyVector<value_type>&& );	
     /*!
         \brief Деструктор                                                   +++
     */                         						
@@ -98,14 +100,14 @@ public:
         
         \return Ссылка на объект
    */
-    const_referens at(size_type) const throw (std::out_of_range);
+    const_reference at(size_type) const throw (std::out_of_range);
     /*! 
         \brief Взятие произвольного элемента вектора для не константного объекта               +++
         \param[in] Индекс элемента      
         
         \return Ссылка на объект
     */		                         		
-    referens at(size_type) throw (std::out_of_range);
+    reference at(size_type) throw (std::out_of_range);
     /*!
         \brief Удаление верхнего элемента                                                     +++
     */				 		
@@ -124,7 +126,7 @@ public:
         \brief Копирование содержимого 
         \param[in] объект типа  MyVector
    */	                         							
-    void copy( const MyVector<value_type>& );
+    void copy(MyVector<value_type> );
     /*!
         \brief   Количество элементов вектора   
         \return Размер вектора
@@ -204,7 +206,7 @@ public:
     /*!
         \brief Вывод структуру вектора на экран
     */						
-    void show() const;				                          						
+    void show_v() const;				                          						
 private:
     /// Количество элементов которые могут одновременно хранится в выделенной области памяти
     size_type m_capacity;

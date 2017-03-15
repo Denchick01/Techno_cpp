@@ -13,7 +13,7 @@
 	 
 ///Оператор присваивания с копированием
 template <typename T>
-mcr::MyVector<T>& mcr::MyVector<T>::operator = (const mcr::MyVector& other) throw (std::bad_alloc)
+mcr::MyVector<T>& mcr::MyVector<T>::operator = (const mcr::MyVector<T>& other) throw (std::bad_alloc)
 {
     MESSAGE("In operator = (const MyVector& other)", std::cout)
     ASSERT_OK()
@@ -23,7 +23,7 @@ mcr::MyVector<T>& mcr::MyVector<T>::operator = (const mcr::MyVector& other) thro
 
     this->~MyVector();
     if (new (this) MyVector<T>(other) != this) {
-        assert(!"Problem with opertator =")
+        assert(!"Problem with opertator =");
         throw std::bad_alloc();
     }
     ASSERT_OK()
@@ -32,7 +32,7 @@ mcr::MyVector<T>& mcr::MyVector<T>::operator = (const mcr::MyVector& other) thro
 
 ///Оператор присваивания с перемещение
 template <typename T>
-mcr::MyVector<T>& mcr::MyVector<T>::operator = (mcr::MyVector&& other) throw (std::bad_alloc)
+mcr::MyVector<T>& mcr::MyVector<T>::operator = (mcr::MyVector<T>&& other) throw (std::bad_alloc)
 {
     MESSAGE("In operator = (MyVector&& other)", std::cout)
     ASSERT_OK()
@@ -64,7 +64,7 @@ const T& mcr::MyVector<T>::operator [] (size_type it) const
 
 ///Оператор сравнения
 template <typename T>
-bool operator == (const MyVector<T>& rhs) 
+bool  mcr::MyVector<T>::operator == (const mcr::MyVector<T>& rhs) 
 {
     MESSAGE("In operator == ", std::cout)
     ASSERT_OK()		             
@@ -82,7 +82,7 @@ bool operator == (const MyVector<T>& rhs)
 
 ///Конструктор по умолчанию
 template <typename T>
-explicit mcr::MyVector<T>MyVector() : m_ptr{nullptr},
+mcr::MyVector<T>::MyVector() : m_ptr{nullptr},
                                       m_size{0},
                                       m_capacity{0}
 {
@@ -91,7 +91,7 @@ explicit mcr::MyVector<T>MyVector() : m_ptr{nullptr},
 
 /// Конструктор с инициализацией
 template <typename T>
-explicit mcr::MyVector<T>MyVector(size_t initial_size, const T& value) throw (std::bad_alloc): 
+mcr::MyVector<T>::MyVector(size_t initial_size, const T& value) throw (std::bad_alloc): 
                                                                       m_capacity{initial_size}
 {
     MESSAGE("In MyVector(size_t, const T&)", std::cout)
@@ -111,7 +111,7 @@ explicit mcr::MyVector<T>MyVector(size_t initial_size, const T& value) throw (st
 
 ///Конструктор с единственным параметром
 template <typename T>
-explicit mcr::MyVector<T>::MyVector(size_t initial_size)	
+mcr::MyVector<T>::MyVector(size_t initial_size)	
 {
     MESSAGE("In MyVector(size_t)", std::cout)
     value_type zero_obj{value_type()};
@@ -156,8 +156,9 @@ template <typename T>
 mcr::MyVector<T>::~MyVector()
 {
     MESSAGE("In ~MyVector()", std::cout)
+    MESSAGE(m_ptr, std::cout)
     if (m_ptr != nullptr) {
-        delete [] m_stk_ptr;
+        delete [] m_ptr;
         MESSAGE("Destructor is complete!", std::cout)
     }
 }
@@ -191,6 +192,7 @@ T& mcr::MyVector<T>::at(size_t it)  throw (std::out_of_range)
 }
 
 ///Доступ к первому элементу для константного объекта
+template <typename T>
 const T& mcr::MyVector<T>::front() const throw (std::range_error)
 {
     MESSAGE("In front() const", std::cout)
@@ -204,6 +206,7 @@ const T& mcr::MyVector<T>::front() const throw (std::range_error)
 }
 
 ///Доступ к первому элементу для не константного объекта
+template <typename T>
 T& mcr::MyVector<T>::front() throw (std::range_error)
 {
     MESSAGE("In front()", std::cout)
@@ -259,7 +262,7 @@ void mcr::MyVector<T>::push_back(T&& value)
 
 ///Копирование содержимого 
 template <typename T>
-void mcr::MyVector<T>::copy( MyVector<T> other) 
+void mcr::MyVector<T>::copy(mcr::MyVector<T> other) 
 {
     MESSAGE("copy( MyVector<T>)", std::cout)
     ASSERT_OK()
@@ -356,8 +359,8 @@ void mcr::MyVector<T>::reserve(size_t new_capacity) throw (std::length_error, st
     ASSERT_OK()
     if (new_capacity > m_capacity) {
         if (new_capacity > max_size()) {
-            assert(!"ERROR: Length error")
-            throw std::length_error();
+            assert(!"ERROR: Length error");
+            throw std::length_error("ERROR: Length error");
         }
         value_type* old_ptr = m_ptr;
         m_capacity = new_capacity;
@@ -391,7 +394,7 @@ size_t mcr::MyVector<T>::max_size() const
 
 ///Изменение размера вектора на заданную величину,
 template <typename T>  
-void mcr::MyStack<T>::resize(size_t new_size, const T& value)
+void mcr::MyVector<T>::resize(size_t new_size, const T& value)
 {
     MESSAGE("resize(size_t, const T&)", std::cout)
     ASSERT_OK()
@@ -408,7 +411,7 @@ void mcr::MyStack<T>::resize(size_t new_size, const T& value)
 
 ///Изменение размеров вектора
 template <typename T>			
-void mcr::MyStack<T>::resize(size_t new_size)
+void mcr::MyVector<T>::resize(size_t new_size)
 {
      MESSAGE("resize(size_t)", std::cout)
      ASSERT_OK()
@@ -419,7 +422,7 @@ void mcr::MyStack<T>::resize(size_t new_size)
 
 ///Возвращает указатель на базовый массив
 template <typename T> 
-T* mcr::MyStack<T>::data()
+T* mcr::MyVector<T>::data()
 {
     MESSAGE("data()", std::cout)
     ASSERT_OK()
@@ -428,7 +431,7 @@ T* mcr::MyStack<T>::data()
 
 ///Возвращает указатель на базовый массив
 template <typename T> 
-const T* mcr::MyStack<T>::data() const
+const T* mcr::MyVector<T>::data() const
 {
     MESSAGE("data() const", std::cout)
     ASSERT_OK()
@@ -446,13 +449,13 @@ size_t mcr::MyVector<T>::capacity() const
 
 ///Обменять содержимое двух векторов
 template <typename T>
-void mcr::MyVector<T>::swap(mcr::MyVector& other )
+void mcr::MyVector<T>::swap(mcr::MyVector<T>& other )
 {
     MESSAGE("swap()", std::cout)
     ASSERT_OK()
     size_t temp_size = m_size;
     size_t temp_capacity = m_capacity;
-    value_type temp_ptr = m_ptr;
+    value_type* temp_ptr = m_ptr;
     m_size = other.m_size;
     m_capacity = other.m_capacity;
     m_ptr = other.m_ptr;
@@ -465,7 +468,7 @@ void mcr::MyVector<T>::swap(mcr::MyVector& other )
 template <typename T>
 void mcr::MyVector<T>::clear()
 {
-    MESSAGE("swap()", std::cout)
+    MESSAGE("clear()", std::cout)
     ASSERT_OK()
     m_size = 0;
 }
@@ -478,7 +481,7 @@ void mcr::MyVector<T>::shrink_to_fit() throw (std::bad_alloc)
     ASSERT_OK()
     value_type* old_ptr = m_ptr;
     if (new (this) MyVector<T>(*this) != this) {
-        assert(!"Problem with shrink_to_fit()")
+        assert(!"Problem with shrink_to_fit()");
         throw std::bad_alloc();
     }
     delete [] old_ptr;

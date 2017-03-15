@@ -22,7 +22,7 @@
         stream << "FILE: " << __FILE__ << " LINE: " << __LINE__ << "  "<< massage << std::endl;
     #define ASSERT_OK()                                                                          \
         if (!v_ok()) {                                                                           \
-        stk_dump(__FILE__, __LINE__, __FUNCTION__);                                              \
+        dump(__FILE__, __LINE__, __FUNCTION__);                                              \
         assert(!"Object is OK");                                                                 \
         }
 #else
