@@ -18,6 +18,7 @@
 #include <stdexcept>
 #include <cassert>
 #include <cmath>
+#include "my_iterator.h"
 #include "my_macro.h"
 
 
@@ -35,6 +36,15 @@ public:
     typedef const T& const_reference; 	
     typedef const T* const_pointer;
     typedef T* pointer;
+
+    typedef MyIterator<const value_type> const_iterator;
+    typedef MyIterator<value_type> iterator;
+
+    iterator begin();
+    iterator end();
+ 
+    const_iterator begin() const;
+    const_iterator end() const;
 
     /*! 
         \brief  Конструктор по умолчанию. Создает пустой контейнер.        +++

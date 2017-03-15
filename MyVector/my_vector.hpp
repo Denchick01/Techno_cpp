@@ -10,6 +10,30 @@
 	Реализация методов класса MyVector
 */
 
+template <typename T>
+typename mcr::MyVector<T>::iterator mcr::MyVector<T>::begin()
+{
+    return iterator(data());
+}
+
+template <typename T> 
+typename mcr::MyVector<T>::iterator mcr::MyVector<T>::end()
+{
+    return iterator(data() + m_size);
+}
+
+template <typename T> 
+typename mcr::MyVector<T>::const_iterator mcr::MyVector<T>::begin() const
+{
+    return const_iterator(data());
+}
+
+template <typename T> 
+typename mcr::MyVector<T>::const_iterator mcr::MyVector<T>::end() const
+{
+    return const_iterator(data() + m_size);
+}
+
 	 
 ///Оператор присваивания с копированием
 template <typename T>
