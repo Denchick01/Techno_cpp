@@ -111,9 +111,11 @@ mcr::MyVector<T>::MyVector(size_t initial_size, const T& value) throw (std::bad_
 
 ///Конструктор с единственным параметром
 template <typename T>
-mcr::MyVector<T>::MyVector(size_t initial_size)	
+mcr::MyVector<T>::MyVector(size_t initial_size)	: m_ptr{nullptr},
+                                                  m_size{0},
+                                                  m_capacity{0}
 {
-    MESSAGE("In MyVector(size_t)", std::cout)
+    MESSAGE("In MyVector(size_t)", std::cout)  
     value_type zero_obj{value_type()};
     MyVector<value_type> new_obj(initial_size, zero_obj);
     swap(new_obj);
@@ -374,7 +376,8 @@ void mcr::MyVector<T>::reserve(size_t new_capacity) throw (std::length_error, st
         for (size_type i = 0; i < m_size; i++) {
             m_ptr[i] = old_ptr[i];
         }
-        delete [] old_ptr;	
+        if (old_ptr != nullptr)
+            delete [] old_ptr;	
     }
     ASSERT_OK()
 } 
