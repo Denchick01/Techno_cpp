@@ -10,31 +10,31 @@
 	Реализация методов класса MyVector
 */
 
+
+///Возвращает итератор на первый элемент 
 template <typename T>
 typename mcr::MyVector<T>::iterator mcr::MyVector<T>::begin()
 {
     return iterator(data());
 }
-
+///Возвращает итератор на элемент, следующий за последним
 template <typename T> 
 typename mcr::MyVector<T>::iterator mcr::MyVector<T>::end()
 {
     return iterator(data() + m_size);
 }
-
+///Возвращает итератор на первый элемент 
 template <typename T> 
 typename mcr::MyVector<T>::const_iterator mcr::MyVector<T>::begin() const
 {
     return const_iterator(data());
 }
-
+///Возвращает итератор на элемент, следующий за последним
 template <typename T> 
 typename mcr::MyVector<T>::const_iterator mcr::MyVector<T>::end() const
 {
     return const_iterator(data() + m_size);
-}
-
-	 
+}	 
 ///Оператор присваивания с копированием
 template <typename T>
 mcr::MyVector<T>& mcr::MyVector<T>::operator = (const mcr::MyVector<T>& other) throw (std::bad_alloc)
@@ -98,6 +98,24 @@ bool  mcr::MyVector<T>::operator == (const mcr::MyVector<T>& rhs)
 
     for (size_t it = 0; it < m_size; it++){
         if (rhs.m_ptr[it] != m_ptr[it])
+            return false;
+    }
+    ASSERT_OK()	
+    return true;
+}
+
+///Оператор неравенства
+template <typename T>
+bool  mcr::MyVector<T>::operator != (const mcr::MyVector<T>& rhs) 
+{
+    MESSAGE("In operator != ", std::cout)
+    ASSERT_OK()		             
+    if (rhs.m_size == m_size) {
+    return false;
+    }
+
+    for (size_t it = 0; it < m_size; it++){
+        if (rhs.m_ptr[it] == m_ptr[it])
             return false;
     }
     ASSERT_OK()	
@@ -266,7 +284,7 @@ void mcr::MyVector<T>::push_back(const T& value)
     MESSAGE("In push_back(const T&)", std::cout)
     ASSERT_OK()
     if (m_size == m_capacity)
-        reserve(m_size * 2);
+        reserve((m_size + 1) * 2);
 
     m_ptr[m_size++] = value;
     ASSERT_OK()
@@ -279,8 +297,8 @@ void mcr::MyVector<T>::push_back(T&& value)
     MESSAGE("In push_back(T&&)", std::cout)
     ASSERT_OK()
     if (m_size == m_capacity)
-        reserve(m_size * 2);
-
+        reserve((m_size + 1) * 2);
+    MESSAGE(m_ptr, std::cout)
     m_ptr[m_size++] = value;
     ASSERT_OK()
 }
@@ -396,12 +414,13 @@ void mcr::MyVector<T>::reserve(size_t new_capacity) throw (std::length_error, st
         catch(std::bad_alloc& e) {
             assert(!"ERROR: bad alloc");
             throw e;
-        }        
-        for (size_type i = 0; i < m_size; i++) {
-            m_ptr[i] = old_ptr[i];
         }
-        if (old_ptr != nullptr)
+        if (old_ptr != nullptr) {
+            for (size_type i = 0; i < m_size; i++) {
+                m_ptr[i] = old_ptr[i];
+            }
             delete [] old_ptr;	
+       }
     }
     ASSERT_OK()
 } 

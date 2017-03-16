@@ -39,13 +39,23 @@ public:
 
     typedef MyIterator<const value_type> const_iterator;
     typedef MyIterator<value_type> iterator;
-
+    
+    /*!
+        \brief Возвращает итератор на первый элемент 
+    */
     iterator begin();
+    /*!
+        \brief 	Возвращает итератор на элемент, следующий за последним 
+    */
     iterator end();
- 
+    /*!
+        \brief Возвращает итератор на первый элемент 
+    */ 
     const_iterator begin() const;
+    /*!
+        \brief 	Возвращает итератор на элемент, следующий за последним 
+    */
     const_iterator end() const;
-
     /*! 
         \brief  Конструктор по умолчанию. Создает пустой контейнер.        +++
   
@@ -103,7 +113,11 @@ public:
     /*!
         \brief Оператор сравнения  
     */		                           			       	
-    bool operator == (const MyVector<value_type>&);                 					       	
+    bool operator == (const MyVector<value_type>&);  
+    /*!
+        \brief Оператор неравенства 
+    */		                           			       	
+    bool operator != (const MyVector<value_type>&);                       					       	
     /*! 
         \brief Взятие произвольного элемента вектора для константного объекта                 +++
         \param[in] Индекс элемента
@@ -222,7 +236,7 @@ private:
     size_type m_capacity;
     /// Количество элементов                                                 								
     size_type m_size;
-    /// Указатель область памяти, хранящей элементы вектора				                         					
+    /// Указатель на область памяти, хранящей элементы вектора				                         					
     value_type* m_ptr;
     /*!
         \brief Верификатор 			

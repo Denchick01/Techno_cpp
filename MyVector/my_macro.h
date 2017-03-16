@@ -15,7 +15,7 @@
 #include <iostream>
 #include <cassert>
 
-#define DEBUG_SET 1
+//#define DEBUG_SET 0
   
 #if DEBUG_SET
     #define MESSAGE(massage, stream)                                                             \

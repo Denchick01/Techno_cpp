@@ -1,3 +1,15 @@
+/*!
+    \file
+   
+    \brief Файл с описанием методов MyVector
+  
+    \author Трощенков Денис
+    
+    \data 27.02.2017
+ 
+    Реализация методов класса MyVector
+*/
+
 template<typename T>
 class MyIterator: public std::iterator<std::input_iterator_tag, T>
 {
