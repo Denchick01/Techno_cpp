@@ -18,12 +18,12 @@ bool simple_test (const T&, const G&, const std::string& messeg);
 int main()
 {
 	all_tests<int>("INT");
-	all_tests<double>("DOUBLE");
- 	all_tests<char>("CHAR");
-	all_tests<float>("FLOAT");
-	all_tests<bool>("BOOL");
+//	all_tests<double>("DOUBLE");
+ //	all_tests<char>("CHAR");
+//	all_tests<float>("FLOAT");
+//	all_tests<bool>("BOOL");
 //        all_tests<std::map<int, int>>("MAP");
-        all_tests<std::string>("string");
+ //       all_tests<std::string>("string");
   //      all_tests<std::vector<int>>("vector");
 }
 
@@ -48,7 +48,7 @@ void all_tests (const std::string& type_str)
 	
 ///Тест функции push и top
 
-	for  (size_t i = 0; i < 100000; i++) {
+	for  (size_t i = 0; i < 100; i++) {
 		test_0.push_back(T());
 		refer_v.push_back(T());
 		test_v.push_back(test_0.back());
@@ -58,6 +58,11 @@ void all_tests (const std::string& type_str)
 
 	refer_v.clear();
 	test_v.clear();
+
+        
+        std::cout << &(*test_0.end())  << "\t" << &(*(test_0.end() - 10)) << "\t" << &(*test_0.begin())<< std::endl;
+        test_0.insert((test_0.end() - 10), 5, -1);
+        test_0.show_v();
 
 ///Тест функции size
 	simple_test<size_t, size_t> (test_0.size(), size_i + 1, "test: size");
@@ -85,7 +90,7 @@ bool Test (const std::vector<T>& test_v, const std::vector<G>& refer_v, const st
 	std::cout << messeg << "...";
 	
 	for (size_t it = 0; it < refer_v.size(); ++it) {
-		if (test_v.at(it) == refer_v.at(it)){
+		if (test_v[it] != refer_v[it]){
 			err_f = false;
 			break;
 		}

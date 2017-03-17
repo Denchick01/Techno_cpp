@@ -34,6 +34,40 @@ template <typename T>
 typename mcr::MyVector<T>::const_iterator mcr::MyVector<T>::end() const
 {
     return const_iterator(data() + m_size);
+}
+
+///Вставляет элементы в указанную позицию в контейнере
+template <typename T> 
+typename mcr::MyVector<T>::iterator 
+mcr::MyVector<T>::insert(typename mcr::MyVector<T>::iterator pos, const T& value) throw (std::bad_alloc)
+{
+    MESSAGE("insert(typename mcr::MyVector<T>::iterator, const T&)", std::cout)
+    ASSERT_OK()
+    insert(pos, 1, value);
+    ASSERT_OK()
+    return pos;    
+}
+///Вставляет элементы в указанную позицию в контейнере
+template <typename T> 
+typename mcr::MyVector<T>::iterator
+mcr::MyVector<T>::insert(typename mcr::MyVector<T>::iterator pos, size_t count, const T& value) throw (std::bad_alloc)
+{
+    MESSAGE("insert(typename mcr::MyVector<T>::iterator, size_t, const T&)", std::cout)
+    ASSERT_OK()
+    if (pos > end() || pos < begin()) {
+        assert(!"bad_alloc");
+        throw std::bad_alloc();
+    }
+   const  size_t first_pos = pos - begin();
+        resize(count + m_size);
+
+    for (iterator it{end() - 1}; it >= (begin() + first_pos); --it) 
+        *(it + count) = *it;
+   
+    for (size_t t_count = 0; t_count < count; ++t_count)
+        *((begin() + first_pos) + t_count) = value;
+    ASSERT_OK()
+    return (begin() + first_pos);
 }	 
 ///Оператор присваивания с копированием
 template <typename T>

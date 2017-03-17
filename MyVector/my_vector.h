@@ -220,6 +220,14 @@ public:
     */
     void resize( size_type count, const value_type& value);
     /*!
+        \brief Вставляет элементы в указанную позицию в контейнере.
+    */
+    iterator insert(iterator, const value_type&) throw (std::bad_alloc);
+    /*!
+        \brief Вставляет элементы в указанную позицию в контейнере.
+    */
+    iterator insert(iterator, size_type, const value_type&) throw (std::bad_alloc);
+    /*!
          \brief Удаляет все элементы вектора
     */
     void clear();
