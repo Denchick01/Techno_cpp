@@ -14,7 +14,7 @@ template<typename T>
 class MyIterator: public std::iterator<std::input_iterator_tag, T>
 {
 public:
-    MyIterator(T*  p);
+    explicit MyIterator(T*  p);
     MyIterator(const MyIterator<T>&); 
 
     const MyIterator<T>& operator = (const MyIterator<T>&);
@@ -32,9 +32,9 @@ public:
     inline MyIterator<T>& operator--();
     inline MyIterator<T>& operator += (typename MyIterator<T>::difference_type);
     inline MyIterator<T>& operator -= (typename MyIterator<T>::difference_type);
-    inline MyIterator<T>& operator + (typename MyIterator<T>::difference_type);
-    inline MyIterator<T>& operator - (typename MyIterator<T>::difference_type);
-    inline size_t operator - (const MyIterator<T>&);
+    inline MyIterator<T> operator + (typename MyIterator<T>::difference_type) const;
+    inline MyIterator<T> operator - (typename MyIterator<T>::difference_type) const;
+    inline size_t operator - (const MyIterator<T>&) const;
     inline T* operator->() const;
 private:
     T* p;
@@ -48,11 +48,11 @@ T* MyIterator<T>::operator -> () const
 
 
 template<typename T>
-MyIterator<T>::MyIterator(T* p) : p(p)
+MyIterator<T>::MyIterator(T* p) : p{p}
 { }
 
 template<typename T>
-MyIterator<T>::MyIterator(const MyIterator& it) : p(it.p)
+MyIterator<T>::MyIterator(const MyIterator& it) : p{it.p}
 { }
 
 
@@ -97,14 +97,14 @@ inline MyIterator<T>& MyIterator<T>::operator -= (typename MyIterator<T>::differ
 }
 
 template<typename T>
-inline MyIterator<T>& MyIterator<T>::operator + (typename MyIterator<T>::difference_type n)
+inline MyIterator<T> MyIterator<T>::operator + (typename MyIterator<T>::difference_type n) const
 {
     MyIterator<T> temp{*this};
     return temp += n;
 }
 
 template<typename T>
-inline MyIterator<T>& MyIterator<T>::operator - (typename MyIterator<T>::difference_type n)
+inline MyIterator<T> MyIterator<T>::operator - (typename MyIterator<T>::difference_type n) const
 {
     MyIterator<T> temp{*this};
     return temp -= n;
@@ -115,7 +115,7 @@ inline MyIterator<T>& MyIterator<T>::operator - (typename MyIterator<T>::differe
 template<typename T>
 const MyIterator<T>& MyIterator<T>::operator = (const MyIterator<T>& it)
 {
-    p(it.p);   
+    p = it.p; 
     return *this;
 }
 
@@ -138,21 +138,21 @@ typename MyIterator<T>::reference MyIterator<T>::operator*() const
 }
 
 template<typename T>
-inline MyIterator<T> &MyIterator<T>::operator++()
+inline MyIterator<T>& MyIterator<T>::operator++()
 {
     ++p;
     return *this;
 }
 
 template<typename T>
-inline MyIterator<T> &MyIterator<T>::operator--()
+inline MyIterator<T>& MyIterator<T>::operator--()
 {
     --p;
     return *this;
 }
 
 template<typename T>
-inline size_t  MyIterator<T>::operator - (const MyIterator<T>& it)
+inline size_t  MyIterator<T>::operator - (const MyIterator<T>& it) const
 {
     return p - it.p;
 }

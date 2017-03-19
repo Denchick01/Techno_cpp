@@ -13,6 +13,7 @@
 #ifndef __MY_VECTOR_H__
 #define __MY_VECTOR_H__
 
+#include <initializer_list>
 #include <new>
 #include <iostream>
 #include <stdexcept>
@@ -37,7 +38,7 @@ public:
     typedef const T* const_pointer;
     typedef T* pointer;
 
-    typedef MyIterator<const value_type> const_iterator;
+    typedef const MyIterator<const value_type> const_iterator;
     typedef MyIterator<value_type> iterator;
     
     /*!
@@ -113,11 +114,11 @@ public:
     /*!
         \brief Оператор сравнения  
     */		                           			       	
-    bool operator == (const MyVector<value_type>&);  
+    bool operator == (const MyVector<value_type>&) const;  
     /*!
         \brief Оператор неравенства 
     */		                           			       	
-    bool operator != (const MyVector<value_type>&);                       					       	
+    bool operator != (const MyVector<value_type>&) const;                       					       	
     /*! 
         \brief Взятие произвольного элемента вектора для константного объекта                 +++
         \param[in] Индекс элемента
@@ -220,13 +221,26 @@ public:
     */
     void resize( size_type count, const value_type& value);
     /*!
-        \brief Вставляет элементы в указанную позицию в контейнере.
+        \brief Вставляет элементы в указанную позицию в контейнере с перемещением
+    */
+    iterator insert(const_iterator, T&&) throw (std::bad_alloc);
+    /*!
+        \brief Вставляет элементы в указанную позицию в контейнере с копированием
     */
     iterator insert(iterator, const value_type&) throw (std::bad_alloc);
     /*!
         \brief Вставляет элементы в указанную позицию в контейнере.
     */
     iterator insert(iterator, size_type, const value_type&) throw (std::bad_alloc);
+    /*!
+        \brief Вставляет элементы в указанную позицию в контейнере.
+    */
+    template< class InputIt >
+    iterator insert(InputIt, InputIt, iterator) throw (std::bad_alloc);
+    /*!
+        \brief Вставляет элементы в указанную позицию в контейнере.
+    */
+    iterator insert(iterator, std::initializer_list<T>);
     /*!
          \brief Удаляет все элементы вектора
     */
@@ -237,8 +251,8 @@ public:
     void swap(MyVector<value_type>& );                                            	
     /*!
         \brief Вывод структуру вектора на экран
-    */						
-    void show_v() const;				                          						
+    */	
+    inline void show_v() const;				                          						
 private:
     /// Количество элементов которые могут одновременно хранится в выделенной области памяти
     size_type m_capacity;
@@ -257,11 +271,14 @@ private:
         \param[in] file_name Имя файла
         \param[in] line номер строки, которая вызвала верификатор
     */				                         							
-    inline void dump(const char*, int, const char*) const;            								
+    inline void dump(const char*, int, const char*) const; 
+    /*!
+        \brief Вывод структуру вектора на экран
+    */     
+    inline void show() const;      								
 		
 };
 }
-
 #include "my_vector.hpp"
 
 #endif
