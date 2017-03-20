@@ -18,14 +18,14 @@ bool simple_test (const T&, const G&, const std::string& messeg);
 
 int main()
 {
-//	all_tests<int>("INT");
+	all_tests<int>("INT");
 	all_tests<double>("DOUBLE");
  	all_tests<char>("CHAR");
-//	all_tests<float>("FLOAT");
-//	all_tests<bool>("BOOL");
-//       all_tests<std::map<int, int>>("MAP");
-//        all_tests<std::string>("STRING");
-//        all_tests<std::vector<int>>("VECTOR");
+	all_tests<float>("FLOAT");
+	all_tests<bool>("BOOL");
+        all_tests<std::map<int, int>>("MAP");
+        all_tests<std::string>("STRING");
+        all_tests<std::vector<int>>("VECTOR");
 }
 
 
@@ -49,7 +49,7 @@ void all_tests (const std::string& type_str)
 	
 ///Тест функции push и top
 
-	for  (size_t i = 0; i < 100; i++) {
+	for  (size_t i = 0; i < 1000000; i++) {
 		test_0.push_back(T());
 		refer_v.push_back(T());
 		test_v.push_back(test_0.back());
@@ -59,13 +59,16 @@ void all_tests (const std::string& type_str)
 
 	refer_v.clear();
 	test_v.clear();
-     
-        refer_v.push_back(1);
-        refer_v.push_back(2);
-//        test_0.insert( refer_v.begin(), refer_v.end(), test_0.begin());
+
+//        new mcr::MyVector<T>;     
+//        refer_v.push_back(1);
+//        refer_v.push_back(2);
+//        test_0.insert(test_0.begin(), refer_v.begin(), refer_v.end());
 //        test_0.insert( (test_0.end() - 10), 5, 10);
-        test_0.insert(test_0.begin(), {5,3,4,5,5,3});
-        test_0.show_v();
+//          test_0.insert(test_0.begin(), {5,3,4,5,5,3});
+//          test_0.show_v();
+//          test_0.erase(test_0.begin(), test_0.begin() + 2);
+//          test_0.show_v();
 ///Тест функции size
 	simple_test<size_t, size_t> (test_0.size(), size_i + 1, "test: size");
 	

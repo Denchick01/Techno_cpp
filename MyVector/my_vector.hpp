@@ -92,15 +92,90 @@ inline void MyVector<std::string>::show_v() const
 template <typename T>
 typename MyVector<T>::iterator MyVector<T>::begin()
 {   
-    MESSAGE("begin()", std::cout);
+    MESSAGE("begin()", std::cout)
     return iterator(data());
+}
+
+///Перегрузка оператора new
+template <typename T>
+inline void* MyVector<T>::operator new (size_t size) throw (std::bad_alloc)
+{
+    MESSAGE("new (size_t)", std::cout)
+    MyVector<T>* ptr = (MyVector<T>*) malloc(size);
+    if (!ptr) 
+        throw std::bad_alloc();
+    *ptr = MyVector();
+    return ptr;
+}
+
+///Перегрузка оператора new 
+template <typename T>
+inline void* MyVector<T>::operator new (size_t size, const MyVector<value_type>& other) throw (std::bad_alloc)
+{
+    MESSAGE("new (size_t, const MyVector<value_type>&)", std::cout)
+    MyVector<T>* ptr = (MyVector<T>*) malloc(size);
+    if (!ptr) 
+        throw std::bad_alloc();
+    *ptr = other;
+    return ptr;
+}
+
+///Перегрузка оператора new[]   
+template <typename T>
+inline void* MyVector<T>::operator new[] (size_t full_size) throw (std::bad_alloc)
+{
+    MESSAGE("new[] (size_t)", std::cout)
+    MyVector<T>* ptr = (MyVector<T>*) malloc(full_size);
+    if (!ptr)
+        throw std::bad_alloc();
+   
+    for (size_t it = 0; it < full_size; ++it) 
+        ptr[it] = MyVector();
+
+    return ptr;
+}
+
+///Перегрузка оператора new[]  
+template <typename T>
+inline void* MyVector<T>::operator new[] (size_t full_size, const MyVector<value_type>& other) throw (std::bad_alloc)
+{
+    MESSAGE("new[] (size_t, const MyVector<value_type>&)", std::cout)
+    MyVector<T>* ptr = (MyVector<T>*) malloc(full_size);
+    if(!ptr)
+        throw std::bad_alloc();
+
+    for (size_t it = 0; it < full_size; ++it)
+        ptr[it] = other;
+    
+    return ptr;
+}
+
+///Перегрузка оператора delete
+template <typename T>
+void inline MyVector<T>::operator delete (void* ptr)
+{
+    MESSAGE("delete", std::cout)
+    MyVector<T>* ptt = (MyVector<T>*) ptr;
+    (*ptt).~MyVector();
+    free(ptt);
+}
+
+///Перегрузка оператора delete[]
+template <typename T>
+void inline MyVector<T>::operator delete[] (void* ptr)
+{
+    MESSAGE("delete", std::cout)
+    MyVector<T>* ptt = (MyVector<T>*) ptr;
+    for (size_t it = 0; it < (_msize(ptt)/ sizeof(MyVector<T>)); ++it) 
+        (ptt[it]).~MyVector();
+    free(ptt);
 }
 
 ///Возвращает итератор на элемент, следующий за последним
 template <typename T> 
 typename MyVector<T>::iterator MyVector<T>::end()
 { 
-    MESSAGE("end()", std::cout);
+    MESSAGE("end()", std::cout)
     return iterator(data() + m_size);
 }
 
@@ -108,7 +183,7 @@ typename MyVector<T>::iterator MyVector<T>::end()
 template <typename T> 
 typename MyVector<T>::const_iterator MyVector<T>::begin() const
 {
-    MESSAGE("begin() const", std::cout);
+    MESSAGE("begin() const", std::cout)
     return const_iterator(data());
 }
 
@@ -116,7 +191,7 @@ typename MyVector<T>::const_iterator MyVector<T>::begin() const
 template <typename T> 
 typename MyVector<T>::const_iterator MyVector<T>::end() const
 {
-    MESSAGE("end() const", std::cout);
+    MESSAGE("end() const", std::cout)
     return const_iterator(data() + m_size);
 }
 
@@ -166,9 +241,9 @@ MyVector<T>::insert(typename MyVector<T>::iterator pos, size_t count, const T& v
 
 ///Вставляет элементы в указанную позицию в контейнере.
 template <typename T> 
-template< class InputIt >
+template< class InputIt, typename G >
 typename MyVector<T>::iterator
-MyVector<T>::insert(InputIt first, InputIt last, typename MyVector<T>::iterator pos) throw (std::bad_alloc)
+MyVector<T>::insert(typename MyVector<T>::iterator pos, InputIt first, InputIt last) throw (std::bad_alloc)
 {
     MESSAGE("insert(typename mcr::MyVector<T>::iterator, InputIt, InputIt)", std::cout)
     ASSERT_OK()
@@ -193,6 +268,40 @@ MyVector<T>::insert(InputIt first, InputIt last, typename MyVector<T>::iterator 
     return (begin() + first_pos);
 }
 
+///Удаляет элемент в позиции pos
+template <typename T>
+typename MyVector<T>::iterator MyVector<T>::erase(typename MyVector<T>::iterator pos) throw (std::bad_alloc)
+{
+    MESSAGE("insert(typename mcr::MyVector<T>::iterator erase(iterator)", std::cout)
+    ASSERT_OK()
+    try {
+        erase(pos, pos + 1);
+    }
+    catch (std::bad_alloc& e) {
+         throw e;
+    }
+    ASSERT_OK()
+    return pos;   
+}
+
+///Удаляет элемент в диапазоне [first; last)
+template <typename T>
+typename MyVector<T>::iterator 
+MyVector<T>::erase(typename MyVector<T>::iterator first, typename MyVector<T>::iterator last) throw (std::bad_alloc)
+{
+    MESSAGE("insert(typename mcr::MyVector<T>::iterator erase(iterator, iterator)", std::cout)
+    ASSERT_OK()
+    if (last > end() || first < begin() || last <= first) {
+        assert(!"bad_alloc");
+        throw std::bad_alloc();
+    }
+    for (iterator it(first), ot(last); ot != end(); ++it, ++ot) 
+        *it = *ot;
+    resize(m_size - (last - first));
+    ASSERT_OK()
+    return first;
+}
+
 ///Вставляет элементы в указанную позицию в контейнере.
 template <typename T>
 typename MyVector<T>::iterator
@@ -200,7 +309,7 @@ MyVector<T>::insert(typename MyVector<T>::iterator pos, std::initializer_list<T>
 {
     MESSAGE("insert(typename mcr::MyVector<T>::iterator, std::initializer_list<T> ilist)", std::cout)
     ASSERT_OK()
-    return insert(ilist.begin(), ilist.end(), pos);
+    return insert(pos, ilist.begin(), ilist.end());
 }
 	 
 ///Оператор присваивания с копированием

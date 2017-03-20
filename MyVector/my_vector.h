@@ -13,6 +13,8 @@
 #ifndef __MY_VECTOR_H__
 #define __MY_VECTOR_H__
 
+#include <malloc.h>
+#include <type_traits>
 #include <initializer_list>
 #include <new>
 #include <iostream>
@@ -118,7 +120,31 @@ public:
     /*!
         \brief Оператор неравенства 
     */		                           			       	
-    bool operator != (const MyVector<value_type>&) const;                       					       	
+    bool operator != (const MyVector<value_type>&) const;   
+    /*
+        \brief Перегрузка оператора new
+    */   
+    inline void* operator new (size_t) throw (std::bad_alloc);
+    /*
+        \brief Перегрузка оператора new
+    */   
+    inline void* operator new (size_t, const MyVector<value_type>&) throw (std::bad_alloc);
+    /*
+        \brief Перегрузка оператора new[]
+    */   
+    inline void* operator new[] (size_t) throw (std::bad_alloc);
+    /*
+        \brief Перегрузка оператора new[]
+    */   
+    inline void* operator new[] (size_t, const MyVector<value_type>&) throw (std::bad_alloc);
+    /*
+        \brief Перегрузка оператора delete
+    */ 
+    inline void operator delete (void*);
+    /*
+        \brief Перегрузка оператора delete[]
+    */ 
+    inline void operator delete[] (void*);
     /*! 
         \brief Взятие произвольного элемента вектора для константного объекта                 +++
         \param[in] Индекс элемента
@@ -235,12 +261,23 @@ public:
     /*!
         \brief Вставляет элементы в указанную позицию в контейнере.
     */
-    template< class InputIt >
-    iterator insert(InputIt, InputIt, iterator) throw (std::bad_alloc);
+    template< class InputIt, typename G = typename
+                             std::enable_if<std::is_convertible<typename
+		             std::iterator_traits<InputIt>::iterator_category,
+			     std::input_iterator_tag>::value>::type>
+    iterator insert(iterator, InputIt, InputIt) throw (std::bad_alloc);
     /*!
         \brief Вставляет элементы в указанную позицию в контейнере.
     */
     iterator insert(iterator, std::initializer_list<T>);
+    /*!
+         \brief Удаляет элемент в позиции pos
+    */
+    iterator erase(iterator) throw (std::bad_alloc);
+    /*!
+         \brief Удаляет элемент в диапазоне [first; last)
+    */
+    iterator erase(iterator, iterator) throw (std::bad_alloc);
     /*!
          \brief Удаляет все элементы вектора
     */
