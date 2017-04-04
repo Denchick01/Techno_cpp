@@ -1,181 +1,43 @@
 /*!
-	\file
-
-	\brief Файл с описанием методов MyVector
-
-	\author Трощенков Денис
-
-	\data 27.02.2017
-
-	Реализация методов класса MyVector
+*    @file
+*
+*    @brief Файл с описанием методов MyVector
+*
+*    @author Трощенков Денис
+*
+*    @data 27.02.2017
+*
+*    Реализация методов класса MyVector
 */
 
 namespace mcr {
 
 ///Вывод структуры вектора на экран
 template <typename T> 
-inline void MyVector<T>::show() const
+inline void MyVector<T>::show_v(std::ostream &output) const
 {
-    MESSAGE("show()", std::cout)
-    std::cout << "MyVector\n\t{\n";
-    std::cout << "\tAmount of elements: " << m_size << "\n";
-    std::cout << "\tSize of allocated memory: " << m_capacity << "\n";
-    std::cout << "\tMyVector[" << m_size << "]:\n\t\t{\n";
+    MESSAGE("IN")
+    output << "MyVector\n\t{\n";
+    output << "\tAmount of elements: " << m_size << "\n";
+    output << "\tSize of allocated memory: " << m_capacity << "\n";
+    output << "\tMyVector[" << m_size << "]:\n\t\t{\n";
 
-    for (size_type i = 0; i < m_size; ++i) 
-        std::cout << "\t\t[" << i << "] = " << m_ptr[i] << "\n";
-
-        std::cout << "\t\t}\n\t}" << std::endl;
-}
-
-///Вывод структуры вектора на экран, для пользовательских типов данных
-template <typename T>
-inline void MyVector<T>::show_v() const
-{
-    MESSAGE("show_v() different", std::cout)
-    std::cout << "MyVector\n";
-    std::cout << "\tAmount of elements: " << m_size << "\n";
-    std::cout << "\tSize of allocated memory: " << m_capacity << "\n";
-
-    std::cout << "I can not display the vector structure for this type\n" << std::endl;
-}
-
-///Вывод структуры вектора на экран, для данных типа int
-template <>
-inline void MyVector<int>::show_v() const 
-{
-    MESSAGE("show_v() int", std::cout)
-    show();
-}
-
-///Вывод структуры вектора на экран, для данных типа double
-template <>
-inline void MyVector<double>::show_v() const
-{
-    MESSAGE("show_v() double", std::cout)
-    show();
-}
-
-///Вывод структуры вектора на экран, для данных типа char
-template <>
-inline void MyVector<char>::show_v() const 
-{
-    MESSAGE("show_v() char", std::cout)
-    show();
-}
-
-///Вывод структуры вектора на экран, для данных типа bool
-template <>
-inline void MyVector<bool>::show_v() const
-{
-    MESSAGE("show_v() bool", std::cout)
-    show();
-}
-
-///Вывод структуры вектора на экран, для данных типа float
-template <>
-inline void MyVector<float>::show_v() const 
-{
-    MESSAGE("show_v() float", std::cout)
-    show();
-}
-
-///Вывод структуры вектора на экран, для данных типа string
-template <>
-inline void MyVector<std::string>::show_v() const
-{
-    MESSAGE("show_v() string", std::cout)
-    show();
+    show_this.show(output, *this);
 }
 
 ///Возвращает итератор на первый элемент 
 template <typename T>
 typename MyVector<T>::iterator MyVector<T>::begin()
 {   
-    MESSAGE("begin()", std::cout)
+    MESSAGE("IN")
     return iterator(data());
-}
-
-///Перегрузка оператора new
-template <typename T>
-inline void* MyVector<T>::operator new (size_t size) throw (std::bad_alloc)
-{
-    MESSAGE("new (size_t)", std::cout)
-    MyVector<T>* ptr = (MyVector<T>*) malloc(size);
-    if (!ptr) 
-        throw std::bad_alloc();
-    *ptr = MyVector();
-    return ptr;
-}
-
-///Перегрузка оператора new 
-template <typename T>
-inline void* MyVector<T>::operator new (size_t size, const MyVector<value_type>& other) throw (std::bad_alloc)
-{
-    MESSAGE("new (size_t, const MyVector<value_type>&)", std::cout)
-    MyVector<T>* ptr = (MyVector<T>*) malloc(size);
-    if (!ptr) 
-        throw std::bad_alloc();
-    *ptr = other;
-    return ptr;
-}
-
-///Перегрузка оператора new[]   
-template <typename T>
-inline void* MyVector<T>::operator new[] (size_t full_size) throw (std::bad_alloc)
-{
-    MESSAGE("new[] (size_t)", std::cout)
-    MyVector<T>* ptr = (MyVector<T>*) malloc(full_size);
-    if (!ptr)
-        throw std::bad_alloc();
-   
-    for (size_t it = 0; it < full_size; ++it) 
-        ptr[it] = MyVector();
-
-    return ptr;
-}
-
-///Перегрузка оператора new[]  
-template <typename T>
-inline void* MyVector<T>::operator new[] (size_t full_size, const MyVector<value_type>& other) throw (std::bad_alloc)
-{
-    MESSAGE("new[] (size_t, const MyVector<value_type>&)", std::cout)
-    MyVector<T>* ptr = (MyVector<T>*) malloc(full_size);
-    if(!ptr)
-        throw std::bad_alloc();
-
-    for (size_t it = 0; it < full_size; ++it)
-        ptr[it] = other;
-    
-    return ptr;
-}
-
-///Перегрузка оператора delete
-template <typename T>
-void inline MyVector<T>::operator delete (void* ptr)
-{
-    MESSAGE("delete", std::cout)
-    MyVector<T>* ptt = (MyVector<T>*) ptr;
-    (*ptt).~MyVector();
-    free(ptt);
-}
-
-///Перегрузка оператора delete[]
-template <typename T>
-void inline MyVector<T>::operator delete[] (void* ptr)
-{
-    MESSAGE("delete", std::cout)
-    MyVector<T>* ptt = (MyVector<T>*) ptr;
-    for (size_t it = 0; it < (_msize(ptt)/ sizeof(MyVector<T>)); ++it) 
-        (ptt[it]).~MyVector();
-    free(ptt);
 }
 
 ///Возвращает итератор на элемент, следующий за последним
 template <typename T> 
 typename MyVector<T>::iterator MyVector<T>::end()
 { 
-    MESSAGE("end()", std::cout)
+    MESSAGE("IN")
     return iterator(data() + m_size);
 }
 
@@ -183,7 +45,7 @@ typename MyVector<T>::iterator MyVector<T>::end()
 template <typename T> 
 typename MyVector<T>::const_iterator MyVector<T>::begin() const
 {
-    MESSAGE("begin() const", std::cout)
+    MESSAGE("IN")
     return const_iterator(data());
 }
 
@@ -191,16 +53,16 @@ typename MyVector<T>::const_iterator MyVector<T>::begin() const
 template <typename T> 
 typename MyVector<T>::const_iterator MyVector<T>::end() const
 {
-    MESSAGE("end() const", std::cout)
+    MESSAGE("IN")
     return const_iterator(data() + m_size);
 }
 
 ///Вставляет элементы в указанную позицию в контейнере с перемещением
 template <typename T> 
 typename MyVector<T>::iterator 
-MyVector<T>::insert(typename MyVector<T>::const_iterator pos, T&& value) throw (std::bad_alloc)
+MyVector<T>::insert(typename MyVector<T>::const_iterator pos, T&& value) throw (MyException)
 {
-    MESSAGE("insert(typename mcr::MyVector<T>::const_iterator, const T&&)", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()
     return insert(pos, 1, value);
 }
@@ -208,9 +70,9 @@ MyVector<T>::insert(typename MyVector<T>::const_iterator pos, T&& value) throw (
 ///Вставляет элементы в указанную позицию в контейнере с копированием
 template <typename T> 
 typename MyVector<T>::iterator 
-MyVector<T>::insert(typename MyVector<T>::iterator pos, const T& value) throw (std::bad_alloc)
+MyVector<T>::insert(typename MyVector<T>::iterator pos, const T& value) throw (MyException)
 {
-    MESSAGE("insert(typename mcr::MyVector<T>::const_iterator, const T&)", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()
     return insert(pos, 1, value);
 }
@@ -218,13 +80,12 @@ MyVector<T>::insert(typename MyVector<T>::iterator pos, const T& value) throw (s
 ///Вставляет элементы в указанную позицию в контейнере
 template <typename T> 
 typename MyVector<T>::iterator
-MyVector<T>::insert(typename MyVector<T>::iterator pos, size_t count, const T& value) throw (std::bad_alloc)
+MyVector<T>::insert(typename MyVector<T>::iterator pos, size_t count, const T& value) throw (MyException)
 {
-    MESSAGE("insert(typename mcr::MyVector<T>::const_iterator, size_t, const T&)", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()
     if (pos > end() || pos < begin()) {
-        assert(!"bad_alloc");
-        throw std::bad_alloc();
+        throw MyException(BAD_ALLOC, "invalid iterator",std::vector<MyException>(), SIMPLE_LINE);
     }
     const  size_t first_pos = pos - begin();
         resize(count + m_size);
@@ -243,13 +104,12 @@ MyVector<T>::insert(typename MyVector<T>::iterator pos, size_t count, const T& v
 template <typename T> 
 template< class InputIt, typename G >
 typename MyVector<T>::iterator
-MyVector<T>::insert(typename MyVector<T>::iterator pos, InputIt first, InputIt last) throw (std::bad_alloc)
+MyVector<T>::insert(typename MyVector<T>::iterator pos, InputIt first, InputIt last) throw (MyException)
 {
-    MESSAGE("insert(typename mcr::MyVector<T>::iterator, InputIt, InputIt)", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()
     if (pos > end() || pos < begin()) {
-        assert(!"bad_alloc");
-        throw std::bad_alloc();
+        throw MyException(BAD_ALLOC, "invalid iterator",std::vector<MyException>(), SIMPLE_LINE);
     }
     size_t count = 0;
     for (InputIt it(first); it < last; ++it) 
@@ -270,9 +130,9 @@ MyVector<T>::insert(typename MyVector<T>::iterator pos, InputIt first, InputIt l
 
 ///Удаляет элемент в позиции pos
 template <typename T>
-typename MyVector<T>::iterator MyVector<T>::erase(typename MyVector<T>::iterator pos) throw (std::bad_alloc)
+typename MyVector<T>::iterator MyVector<T>::erase(typename MyVector<T>::iterator pos) throw (MyException)
 {
-    MESSAGE("insert(typename mcr::MyVector<T>::iterator erase(iterator)", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()
     try {
         erase(pos, pos + 1);
@@ -287,13 +147,12 @@ typename MyVector<T>::iterator MyVector<T>::erase(typename MyVector<T>::iterator
 ///Удаляет элемент в диапазоне [first; last)
 template <typename T>
 typename MyVector<T>::iterator 
-MyVector<T>::erase(typename MyVector<T>::iterator first, typename MyVector<T>::iterator last) throw (std::bad_alloc)
+MyVector<T>::erase(typename MyVector<T>::iterator first, typename MyVector<T>::iterator last) throw (MyException)
 {
-    MESSAGE("insert(typename mcr::MyVector<T>::iterator erase(iterator, iterator)", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()
     if (last > end() || first < begin() || last <= first) {
-        assert(!"bad_alloc");
-        throw std::bad_alloc();
+        throw MyException(BAD_ALLOC, "invalid iterator",std::vector<MyException>(), SIMPLE_LINE);
     }
     for (iterator it(first), ot(last); ot != end(); ++it, ++ot) 
         *it = *ot;
@@ -307,16 +166,16 @@ template <typename T>
 typename MyVector<T>::iterator
 MyVector<T>::insert(typename MyVector<T>::iterator pos, std::initializer_list<T> ilist)
 {
-    MESSAGE("insert(typename mcr::MyVector<T>::iterator, std::initializer_list<T> ilist)", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()
     return insert(pos, ilist.begin(), ilist.end());
 }
 	 
 ///Оператор присваивания с копированием
 template <typename T>
-MyVector<T>& MyVector<T>::operator = (const MyVector<T>& other) throw (std::bad_alloc)
+MyVector<T>& MyVector<T>::operator = (const MyVector<T>& other) throw (MyException)
 {
-    MESSAGE("In operator = (const MyVector& other)", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()
     if (this == &other) { 
         return *this;	
@@ -324,8 +183,7 @@ MyVector<T>& MyVector<T>::operator = (const MyVector<T>& other) throw (std::bad_
 
     this->~MyVector();
     if (new (this) MyVector<T>(other) != this) {
-        assert(!"Problem with opertator =");
-        throw std::bad_alloc();
+        throw MyException(BAD_ALLOC, "error new",std::vector<MyException>(), SIMPLE_LINE);
     }
     ASSERT_OK()
     return *this;    
@@ -333,13 +191,10 @@ MyVector<T>& MyVector<T>::operator = (const MyVector<T>& other) throw (std::bad_
 
 ///Оператор присваивания с перемещение
 template <typename T>
-MyVector<T>& MyVector<T>::operator = (MyVector<T>&& other) throw (std::bad_alloc)
+MyVector<T>& MyVector<T>::operator = (MyVector<T>&& other) throw (MyException)
 {
-    MESSAGE("In operator = (MyVector&& other)", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()
-    if (this == &other) { 
-        return *this;	
-    }
     swap(other);
     ASSERT_OK()
     return *this;    
@@ -349,7 +204,7 @@ MyVector<T>& MyVector<T>::operator = (MyVector<T>&& other) throw (std::bad_alloc
 template <typename T>
 T& MyVector<T>::operator [] (size_type it) 
 {
-    MESSAGE("In operator []", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()
     return m_ptr[it];
 }
@@ -358,7 +213,7 @@ T& MyVector<T>::operator [] (size_type it)
 template <typename T>
 const T& MyVector<T>::operator [] (size_type it) const
 {
-    MESSAGE("In operator [] const", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()
     return m_ptr[it];
 }
@@ -367,7 +222,7 @@ const T& MyVector<T>::operator [] (size_type it) const
 template <typename T>
 bool  MyVector<T>::operator == (const MyVector<T>& rhs) const 
 {
-    MESSAGE("In operator == ", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()		             
     if (rhs.m_size != m_size) {
     return false;
@@ -385,7 +240,7 @@ bool  MyVector<T>::operator == (const MyVector<T>& rhs) const
 template <typename T>
 bool  MyVector<T>::operator != (const MyVector<T>& rhs) const
 {
-    MESSAGE("In operator != ", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()		             
     if (rhs.m_size == m_size) {
     return false;
@@ -405,22 +260,21 @@ MyVector<T>::MyVector() : m_ptr{nullptr},
                                       m_size{0},
                                       m_capacity{0}
 {
-    MESSAGE("In MyVector()", std::cout)
+    MESSAGE("IN")
 }
 
 /// Конструктор с инициализацией
 template <typename T>
-MyVector<T>::MyVector(size_t initial_size, const T& value) throw (std::bad_alloc): 
+MyVector<T>::MyVector(size_t initial_size, const T& value) throw (MyException): 
                                                                       m_capacity{initial_size}
 {
-    MESSAGE("In MyVector(size_t, const T&)", std::cout)
+    MESSAGE("IN")
     try {
         m_ptr = new value_type[m_capacity];
     }
     catch(std::bad_alloc& e) {
-        MESSAGE(e.what(), std::cerr)
-        assert(!"ERROR: bad alloc");
-        throw e;
+        MESSAGE(e.what())
+        throw MyException(BAD_ALLOC, "new error", std::vector<MyException>(), SIMPLE_LINE);
     }
     for (m_size = 0; m_size < initial_size; ++m_size) {
         m_ptr[m_size] = value;
@@ -434,7 +288,7 @@ MyVector<T>::MyVector(size_t initial_size)	: m_ptr{nullptr},
                                                   m_size{0},
                                                   m_capacity{0}
 {
-    MESSAGE("In MyVector(size_t)", std::cout)  
+    MESSAGE("IN")  
     value_type zero_obj{value_type()};
     MyVector<value_type> new_obj(initial_size, zero_obj);
     swap(new_obj);
@@ -443,17 +297,16 @@ MyVector<T>::MyVector(size_t initial_size)	: m_ptr{nullptr},
 
 ///Копирующей конструктор	
 template <typename T>
-MyVector<T>::MyVector(const MyVector<T>& other) throw (std::bad_alloc): 
+MyVector<T>::MyVector(const MyVector<T>& other) throw (MyException): 
                                                     m_capacity{other.m_size}
 {
-    MESSAGE("In MyVector(const MyVector<T>& )", std::cout)
+    MESSAGE("IN")
     try {
         m_ptr = new value_type[m_capacity];
     }
     catch(std::bad_alloc& e) {
-        MESSAGE(e.what(), std::cerr)
-        assert(!"ERROR: bad alloc");
-        throw e;
+        MESSAGE(e.what())
+        throw MyException(BAD_ALLOC, "new error", std::vector<MyException>(), SIMPLE_LINE);
     }
     for (m_size = 0; m_size < other.m_size; ++m_size) {
         m_ptr[m_size] = other.m_ptr[m_size];
@@ -467,7 +320,7 @@ MyVector<T>::MyVector(MyVector<T>&& other) : m_ptr{nullptr},
                                                   m_size{0},
                                                   m_capacity{0}
 {
-    MESSAGE("In MyVector(MyVector<T>&& )", std::cout)
+    MESSAGE("IN")
     swap(other);
     ASSERT_OK()
 }
@@ -476,23 +329,20 @@ MyVector<T>::MyVector(MyVector<T>&& other) : m_ptr{nullptr},
 template <typename T>
 MyVector<T>::~MyVector()
 {
-    MESSAGE("In ~MyVector()", std::cout)
-    MESSAGE(m_ptr, std::cout)
-    if (m_ptr != nullptr) {
-        delete [] m_ptr;
-        MESSAGE("Destructor is complete!", std::cout)
-    }
+    MESSAGE("IN")
+    MESSAGE(m_ptr)
+    delete [] m_ptr;
+    MESSAGE("Destructor is complete!")
 }
 
 ///Доступ к элементу с проверкой выхода за границу
 template <typename T>
-const T& MyVector<T>::at(size_t it) const throw (std::out_of_range)
+const T& MyVector<T>::at(size_t it) const throw (MyException)
 { 
-    MESSAGE("In at(size) const", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()
     if (it >= m_size) {
-        assert(!"ERROR: out of range");
-        throw std::out_of_range("ERROR: out of range");
+        throw  MyException(OUT_RANGE, "ERROR: out of range", std::vector<MyException>(), SIMPLE_LINE);
     }
     ASSERT_OK()
     return m_ptr[it];
@@ -500,13 +350,12 @@ const T& MyVector<T>::at(size_t it) const throw (std::out_of_range)
 
 ///Доступ к элементу с проверкой выхода за границу
 template <typename T>
-T& MyVector<T>::at(size_t it)  throw (std::out_of_range)
+T& MyVector<T>::at(size_t it)  throw (MyException)
 {
-    MESSAGE("In at(size)", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()
     if (it >= m_size) {
-        assert(!"ERROR: out of range");
-        throw std::out_of_range("ERROR: out of range");
+        throw MyException(OUT_RANGE, "ERROR: out of range", std::vector<MyException>(), SIMPLE_LINE);
     }
     ASSERT_OK()
     return m_ptr[it];
@@ -514,13 +363,12 @@ T& MyVector<T>::at(size_t it)  throw (std::out_of_range)
 
 ///Доступ к первому элементу для константного объекта
 template <typename T>
-const T& MyVector<T>::front() const throw (std::range_error)
+const T& MyVector<T>::front() const throw (MyException)
 {
-    MESSAGE("In front() const", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()
     if (m_size == 0) {
-        assert(!"Error: Vector is epmty!!!");
-        throw std::range_error( "Error: Vector is epmty!!" );
+        throw MyException(OUT_RANGE, "Error: Vector is epmty!!", std::vector<MyException>(), SIMPLE_LINE);
     }
     ASSERT_OK()
     return m_ptr[0];
@@ -528,13 +376,12 @@ const T& MyVector<T>::front() const throw (std::range_error)
 
 ///Доступ к первому элементу для не константного объекта
 template <typename T>
-T& MyVector<T>::front() throw (std::range_error)
+T& MyVector<T>::front() throw (MyException)
 {
-    MESSAGE("In front()", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()
     if (m_size == 0) {
-        assert(!"Error: Vector is epmty!!!");
-        throw std::range_error( "Error: Vector is epmty!!" );
+        throw MyException(OUT_RANGE, "Error: Vector is epmty!!", std::vector<MyException>(), SIMPLE_LINE);
     }
     ASSERT_OK()
     return m_ptr[0];
@@ -542,13 +389,12 @@ T& MyVector<T>::front() throw (std::range_error)
 
 ///Удаление верхнего элемента
 template <typename T>
-void MyVector<T>::pop_back() throw (std::range_error)
+void MyVector<T>::pop_back() throw (MyException)
 {
-    MESSAGE("In pop_back()", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()
     if (m_size == 0) {
-        assert(!"Error: Vector is epmty!!!");
-        throw std::range_error( "Error: Vector is epmty!!" );
+        throw MyException(OUT_RANGE, "Error: Vector is epmty!!", std::vector<MyException>(), SIMPLE_LINE);
     }
     m_ptr[--m_size] = value_type();   
     ASSERT_OK()
@@ -558,7 +404,7 @@ void MyVector<T>::pop_back() throw (std::range_error)
 template <typename T>
 void MyVector<T>::push_back(const T& value)
 {
-    MESSAGE("In push_back(const T&)", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()
     if (m_size == m_capacity)
         reserve((m_size + 1) * 2);
@@ -571,11 +417,11 @@ void MyVector<T>::push_back(const T& value)
 template <typename T>
 void MyVector<T>::push_back(T&& value)
 {
-    MESSAGE("In push_back(T&&)", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()
     if (m_size == m_capacity)
         reserve((m_size + 1) * 2);
-    MESSAGE(m_ptr, std::cout)
+    MESSAGE(m_ptr)
     m_ptr[m_size++] = value;
     ASSERT_OK()
 }
@@ -585,7 +431,7 @@ void MyVector<T>::push_back(T&& value)
 template <typename T>
 void MyVector<T>::copy(mcr::MyVector<T> other) 
 {
-    MESSAGE("copy( MyVector<T>)", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()
     swap(other);
     ASSERT_OK()
@@ -595,7 +441,7 @@ void MyVector<T>::copy(mcr::MyVector<T> other)
 template <typename T>
 size_t MyVector<T>::size() const
 {
-    MESSAGE("size()", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()
     return m_size;
 }
@@ -604,33 +450,31 @@ size_t MyVector<T>::size() const
 template <typename T>
 bool MyVector<T>::empty() const
 {
-    MESSAGE("empty()", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()
     return m_size == 0;
 }
 
 ///Доступ к верхнему элементу для константного объекта
 template <typename T>
-const T&  MyVector<T>::back() const throw (std::range_error)
+const T&  MyVector<T>::back() const throw (MyException)
 {
-    MESSAGE("back() const", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()
     if (m_size == 0) {
-        assert(!"Error: Vector is epmty!!!");
-        throw std::range_error( "Error: Vector is epmty!!" );
+        throw MyException(OUT_RANGE, "Error: Vector is epmty!!", std::vector<MyException>(), SIMPLE_LINE);
     }
     return m_ptr[m_size - 1];
 }
 
 ///Доступ к Верхнему элементу для не константного объекта
 template <typename T>
-T& MyVector<T>::back() throw (std::range_error)
+T& MyVector<T>::back() throw (MyException)
 {
-    MESSAGE("back()", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()
     if (m_size == 0) {
-        assert(!"Error: Vector is epmty!!!");
-        throw std::range_error( "Error: Vector is epmty!!" );
+        throw MyException(OUT_RANGE, "Error: Vector is epmty!!", std::vector<MyException>(), SIMPLE_LINE);
     }
     return m_ptr[m_size - 1];
 }
@@ -639,7 +483,7 @@ T& MyVector<T>::back() throw (std::range_error)
 template <typename T>
 bool MyVector<T>::v_ok() const
 {
-    MESSAGE("v_ok()", std::cout)
+    MESSAGE("IN")
     if (m_size > m_capacity)
         return false;
     return true;
@@ -647,26 +491,27 @@ bool MyVector<T>::v_ok() const
  
 ///Дампер
 template <typename T>
-inline void MyVector<T>::dump(const char* file_name, int line ,const char* func_name) const
+inline void MyVector<T>::dump(const char* file_name, int line , const char* func_name, std::ostream& output) const
 {
 
-    std::cerr << " FILE: " << file_name << "\n";
-    std::cerr <<  " ERROR: LINE: " << line << "\n";
-    std::cerr << " FUNCTION: " << func_name << "\n";
+    m_logg.get_log(output);
+ 
+    output << " FILE: " << file_name << "\n";
+    output <<  " ERROR: LINE: " << line << "\n";
+    output << " FUNCTION: " << func_name << "\n";
 
-    show_v();
+    show_v(output);
 }
 
 /// Устанавливает минимально возможное количество элементов в векторе
 template <typename T>
-void MyVector<T>::reserve(size_t new_capacity) throw (std::length_error, std::bad_alloc)
+void MyVector<T>::reserve(size_t new_capacity) throw (MyException)
 {
-    MESSAGE("reserve(size_t)", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()
     if (new_capacity > m_capacity) {
         if (new_capacity > max_size()) {
-            assert(!"ERROR: Length error");
-            throw std::length_error("ERROR: Length error");
+            throw MyException(OUT_RANGE, "ERROR: Length error", std::vector<MyException>(), SIMPLE_LINE);
         }
         value_type* old_ptr = m_ptr;
         m_capacity = new_capacity;
@@ -674,8 +519,7 @@ void MyVector<T>::reserve(size_t new_capacity) throw (std::length_error, std::ba
             m_ptr = new value_type[m_capacity];
         }
         catch(std::bad_alloc& e) {
-            assert(!"ERROR: bad alloc");
-            throw e;
+            throw MyException(BAD_ALLOC, "new error", std::vector<MyException>(), SIMPLE_LINE);
         }
         if (old_ptr != nullptr) {
             for (size_type i = 0; i < m_size; i++) {
@@ -691,7 +535,7 @@ void MyVector<T>::reserve(size_t new_capacity) throw (std::length_error, std::ba
 template <typename T>
 size_t MyVector<T>::max_size() const
 {
-    MESSAGE("max_size(size_t)", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()
     size_t max_size =  size_t(pow (2, (sizeof(size_t) * 8) - 1)) - 1;
     max_size = (max_size * 2 + 1)/sizeof(value_type);
@@ -702,9 +546,9 @@ size_t MyVector<T>::max_size() const
 
 ///Изменение размера вектора на заданную величину,
 template <typename T>  
-void MyVector<T>::resize(size_t new_size, const T& value)
+void MyVector<T>::resize(size_t new_size, const T& value)  throw (MyException)
 {
-    MESSAGE("resize(size_t, const T&)", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()
     if (new_size > m_size) {
         if (new_size > m_capacity) {
@@ -719,9 +563,9 @@ void MyVector<T>::resize(size_t new_size, const T& value)
 
 ///Изменение размеров вектора
 template <typename T>			
-void MyVector<T>::resize(size_t new_size)
+void MyVector<T>::resize(size_t new_size) throw (MyException)
 {
-     MESSAGE("resize(size_t)", std::cout)
+     MESSAGE("IN")
      ASSERT_OK()
      value_type temp_value{value_type()};
      resize(new_size, temp_value);
@@ -732,7 +576,7 @@ void MyVector<T>::resize(size_t new_size)
 template <typename T> 
 T* MyVector<T>::data()
 {
-    MESSAGE("data()", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()
     return m_ptr;   
 }
@@ -741,7 +585,7 @@ T* MyVector<T>::data()
 template <typename T> 
 const T* mcr::MyVector<T>::data() const
 {
-    MESSAGE("data() const", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()
     return m_ptr;   
 }
@@ -750,7 +594,7 @@ const T* mcr::MyVector<T>::data() const
 template <typename T>
 size_t MyVector<T>::capacity() const
 {
-    MESSAGE("data()", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()
     return m_capacity;   
 }
@@ -759,19 +603,13 @@ size_t MyVector<T>::capacity() const
 template <typename T>
 void MyVector<T>::swap(mcr::MyVector<T>& other )
 {
-    MESSAGE("swap()", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()
-    size_t temp_size = m_size;
-    size_t temp_capacity = m_capacity;
-    value_type* temp_ptr = m_ptr;
 
-    m_size = other.m_size;
-    m_capacity = other.m_capacity;
-    m_ptr = other.m_ptr;
+    std::swap(m_size, other.m_size);
+    std::swap(m_capacity, other.m_capacity);
+    std::swap(m_ptr, other.m_ptr);
 
-    other.m_size = temp_size;
-    other.m_capacity = temp_capacity;
-    other.m_ptr = temp_ptr;
     ASSERT_OK()
 }
 
@@ -779,7 +617,7 @@ void MyVector<T>::swap(mcr::MyVector<T>& other )
 template <typename T>
 void MyVector<T>::clear()
 {
-    MESSAGE("clear()", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()
     m_size = 0;
     ASSERT_OK()
@@ -787,16 +625,15 @@ void MyVector<T>::clear()
 
 ///Уменьшает количество используемой памяти
 template <typename T>
-void MyVector<T>::shrink_to_fit() throw (std::bad_alloc)
+void MyVector<T>::shrink_to_fit() throw (MyException)
 {
-    MESSAGE("shrink_to_fit()", std::cout)
+    MESSAGE("IN")
     ASSERT_OK()
-    value_type* old_ptr = m_ptr;
-    if (new (this) MyVector<T>(*this) != this) {
-        assert(!"Problem with shrink_to_fit()");
-        throw std::bad_alloc();
+
+    m_ptr = (MyVector<T>*) realloc (m_ptr, m_size * sizeof(MyVector<T>));
+    if (m_ptr == nullptr) {
+        throw MyException(BAD_ALLOC, "realloc error",std::vector<MyException>(), SIMPLE_LINE);
     }
-    delete [] old_ptr;
     ASSERT_OK()   
 }
 } //namespace end

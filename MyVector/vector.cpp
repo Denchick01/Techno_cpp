@@ -45,11 +45,12 @@ void all_tests (const std::string& type_str)
 	std::cout << "\n\tALL_TESTS " << type_str <<" TYPE\n";
 
 ///Тест функции empty
+        test_0.empty();
 	simple_test<bool, bool> (test_0.empty(), true, "test: empty");
 	
 ///Тест функции push и top
 
-	for  (size_t i = 0; i < 1000000; i++) {
+	for  (size_t i = 0; i < 10; i++) {
 		test_0.push_back(T());
 		refer_v.push_back(T());
 		test_v.push_back(test_0.back());
@@ -74,7 +75,7 @@ void all_tests (const std::string& type_str)
 	
 ///Тест функции swap и take_any
 
-	test_1 = (mcr::MyVector<T>(test_0));
+	test_1 = test_0;
 
         size_t i = 0;
 	for (auto v_t : test_0) {
