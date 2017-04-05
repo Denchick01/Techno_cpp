@@ -1,18 +1,13 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "MyStack.h"
+#include <map>
+#include "my_macro.h"
+#include "my_stack.h"
+#include "my_tests.hpp"
+#include <cstdlib>
+#include <stdexcept>
 
-
-template <typename T, typename G> 
-bool Test (const std::vector<T>&, const std::vector<G>&, const std::string&);
-
-
-template <typename T>
-void all_tests (const std::string&);
-
-template <typename T, typename G>
-bool simple_test (const T&, const G&, const std::string& messeg);
 
 int main()
 {
@@ -20,116 +15,56 @@ int main()
 	all_tests<double>("DOUBLE");
  	all_tests<char>("CHAR");
 	all_tests<float>("FLOAT");
-	all_tests<bool>("BOOL");
+//	all_tests<bool>("BOOL");
+//        all_tests<std::map<int, int>>("MAP");
+//        all_tests<std::string>("STRING");
+//        all_tests<std::vector<int>>("VECTOR");
 }
 
 
-
+///Проверка встроенных типов
 template <typename T>
 void all_tests (const std::string& type_str)
 {
+    std::cout << "START test for type: " << type_str << "\n";
+    mcr::MyStack<T> test_stack_1 (10 , 1);
 
-	std::vector<T> refer_v;
-	std::vector<T> test_v;
-	
-	MyStack<T> test_0;
-	MyStack<T> test_1;
-	
-	size_t size_i = 0;
-	
-	std::cout << "\n\tALL_TESTS " << type_str <<" TYPE\n";
+    std::vector<T> reference_stack_1 (10, 1);
+    std::vector<T> reference_stack_2;
 
-///Тест функции empty
-	simple_test<bool, bool> (test_0.empty(), true, "test: empty");
-	
-///Тест функции push и top
+///Проверка функций empty, pop и top 
+    while(!test_stack_1.empty()) {
+        reference_stack_2.push_back(test_stack_1.top());
+        test_stack_1.pop();
+    }
 
-	for  (size_t i = 0; i < 100; i++) {
-		test_0.push(i);
-		refer_v.push_back(i);
-		test_v.push_back(test_0.top());
-		size_i = i;
-	}
-	Test<T, T> (test_v, refer_v, "test: push & top");
+    Test (reference_stack_2, reference_stack_1, "Проверка функций empty, pop и top");
 
-	refer_v.clear();
-	test_v.clear();
+///Проверка функций push, size 
+    reference_stack_2.clear();
+    reference_stack_1.clear();
+    size_t num_iter = 100;
+    for (size_t it = 0; it < num_iter; ++it) {
+       int r_value = rand() % 100;
+       test_stack_1.push(r_value);
+       reference_stack_1.push_back(r_value);
+       reference_stack_2.push_back(test_stack_1.top());
+    }
 
-///Тест функции size
-	simple_test<size_t, size_t> (test_0.size(), size_i + 1, "test: size");
-	
-///Тест функции swap и take_any
+     Test (reference_stack_2, reference_stack_1, "Проверка функций push");
+     simple_test(num_iter, test_stack_1.size(), "Проверка функций size");
 
-	test_1.copy(test_0);
+///Проверка функции swap
 
-	for  (size_t i = test_0.size(); i > 0 ; --i) {
-		test_v.push_back(test_0.top());
-		refer_v.push_back(test_1.top());
-		test_1.pop();
-		test_0.pop();
-	}
-	Test<T, T> (test_v, refer_v, "test: swap & take_any");
+    mcr::MyStack<T> test_stack_2;
+    test_stack_2.swap(test_stack_1);
 
-	refer_v.clear();
-	test_v.clear();
+    while(!test_stack_2.empty()) {
+        reference_stack_2.push_back(test_stack_2.top());
+        test_stack_2.pop();
+    }
 
-///Тест оператора присваивания 
-	for  (size_t i = 0; i < 10; i++) 
-		test_0.push(i);
-		
+    Test (reference_stack_2, reference_stack_1, "Проверка функций swap");
 
-	test_1 = test_0;
 
-	for  (size_t i = test_0.size(); i > 0 ; --i) {
-		test_v.push_back(test_0.top());
-		refer_v.push_back(test_1.top());
-		test_1.pop();
-		test_0.pop();
-	}
-	Test<T, T> (test_v, refer_v, "test: operator =");
-
-	std::cout << "\tALL_TESTS " << type_str <<" TYPE END!\n\n";
-}
-
-	
-
-template <typename T, typename G>
-bool Test (const std::vector<T>& test_v, const std::vector<G>& refer_v, const std::string& messeg)
-{
-
-	bool err_f = true;
-
-	std::cout << messeg << "...";
-	
-	for (size_t it = 0; it < refer_v.size(); ++it) {
-		if (test_v[it] != refer_v[it]){
-			err_f = false;
-			break;
-		}
-	}
-		
-	if (!err_f) 
-		std::cout << "TEST FAILED!!!\n";
-	else
-		std::cout << "TEST PASSED!!!" << std::endl;
-
-	return err_f;
-}
-
-template <typename T, typename G>
-bool simple_test (const T& test_v, const G& refer_v, const std::string& messeg)
-{
-	bool err_f = true;
-
-	std::cout << messeg << "...";
-
-	if (test_v != refer_v)
-		err_f = false;
-
-	if (!err_f) 
-		std::cout << "TEST FAILED!!!\n";
-	else
-		std::cout << "TEST PASSED!!!" << std::endl;
-
-	return err_f;
 }

@@ -1,0 +1,1 @@
+/usr/bin/c++       CMakeFiles/vector_test.dir/vector.cpp.o CMakeFiles/vector_test.dir/home/bird/Общедоступные/CppPrj/Techno_cpp/common_source/logger.cpp.o CMakeFiles/vector_test.dir/home/bird/Общедоступные/CppPrj/Techno_cpp/common_source/my_exception.cpp.o  -o vector_test -rdynamic 

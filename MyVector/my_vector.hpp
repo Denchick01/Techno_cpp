@@ -258,9 +258,9 @@ bool  MyVector<T>::operator != (const MyVector<T>& rhs) const
 
 ///Конструктор по умолчанию
 template <typename T>
-MyVector<T>::MyVector() : m_ptr{nullptr},
-                                      m_size{0},
-                                      m_capacity{0}
+MyVector<T>::MyVector() : m_capacity{0},
+                          m_size{0},
+                          m_ptr{0}
 {
     MESSAGE("IN")
 }
@@ -286,9 +286,9 @@ MyVector<T>::MyVector(size_t initial_size, const T& value) throw (MyException):
 
 ///Конструктор с единственным параметром
 template <typename T>
-MyVector<T>::MyVector(size_t initial_size)	: m_ptr{nullptr},
+MyVector<T>::MyVector(size_t initial_size)	: m_capacity{0},
                                                   m_size{0},
-                                                  m_capacity{0}
+                                                  m_ptr{nullptr}
 {
     MESSAGE("IN")  
     value_type zero_obj{value_type()};
@@ -318,9 +318,9 @@ MyVector<T>::MyVector(const MyVector<T>& other) throw (MyException):
 
 ///Конструктор с перемещением
 template <typename T>
-MyVector<T>::MyVector(MyVector<T>&& other) : m_ptr{nullptr},
-                                                  m_size{0},
-                                                  m_capacity{0}
+MyVector<T>::MyVector(MyVector<T>&& other) : m_capacity{0},
+                                             m_size{0},
+                                             m_ptr{nullptr}
 {
     MESSAGE("IN")
     swap(other);
