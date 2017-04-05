@@ -44,7 +44,7 @@ void all_tests (const std::string& type_str)
 	
 ///Тест функции push и top
 
-	for  (size_t i = 0; i < 1000000; i++) {
+	for  (size_t i = 0; i < 100; i++) {
 		test_0.push(i);
 		refer_v.push_back(i);
 		test_v.push_back(test_0.top());
@@ -60,16 +60,38 @@ void all_tests (const std::string& type_str)
 	
 ///Тест функции swap и take_any
 
-	test_1.swap(test_0);
+	test_1.copy(test_0);
 
-	for  (size_t i = 0; i < test_0.size(); i++) {
-		test_v.push_back(test_0.take_any(i));
-		refer_v.push_back(test_1.take_any(i));
+	for  (size_t i = test_0.size(); i > 0 ; --i) {
+		test_v.push_back(test_0.top());
+		refer_v.push_back(test_1.top());
+		test_1.pop();
+		test_0.pop();
 	}
- 	Test<T, T> (test_v, refer_v, "test: swap & take_any");
+	Test<T, T> (test_v, refer_v, "test: swap & take_any");
+
+	refer_v.clear();
+	test_v.clear();
+
+///Тест оператора присваивания 
+	for  (size_t i = 0; i < 10; i++) 
+		test_0.push(i);
+		
+
+	test_1 = test_0;
+
+	for  (size_t i = test_0.size(); i > 0 ; --i) {
+		test_v.push_back(test_0.top());
+		refer_v.push_back(test_1.top());
+		test_1.pop();
+		test_0.pop();
+	}
+	Test<T, T> (test_v, refer_v, "test: operator =");
 
 	std::cout << "\tALL_TESTS " << type_str <<" TYPE END!\n\n";
 }
+
+	
 
 template <typename T, typename G>
 bool Test (const std::vector<T>& test_v, const std::vector<G>& refer_v, const std::string& messeg)
