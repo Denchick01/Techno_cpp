@@ -1,0 +1,1 @@
+/usr/bin/c++       CMakeFiles/array_test.dir/array.cpp.o CMakeFiles/array_test.dir/home/bird/Общедоступные/CppPrj/Techno_cpp/common_source/my_exception.cpp.o  -o array_test -rdynamic 

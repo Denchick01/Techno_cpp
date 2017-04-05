@@ -1,0 +1,1 @@
+/home/bird/Общедоступные/CppPrj/Techno_cpp/MyArray/temp_dir/CMakeFiles/array_test.dir
