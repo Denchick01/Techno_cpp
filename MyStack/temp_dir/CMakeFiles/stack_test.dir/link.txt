@@ -1,1 +1,0 @@
-/usr/bin/c++       CMakeFiles/stack_test.dir/stack.cpp.o CMakeFiles/stack_test.dir/home/bird/Общедоступные/CppPrj/Techno_cpp/common_source/logger.cpp.o CMakeFiles/stack_test.dir/home/bird/Общедоступные/CppPrj/Techno_cpp/common_source/my_exception.cpp.o  -o stack_test -rdynamic 
