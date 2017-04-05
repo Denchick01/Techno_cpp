@@ -12,6 +12,7 @@
 #ifndef __MY_EXCEPTION_HPP__
 #define __MY_EXCEPTION_HPP__
 
+
 #include <sstream>
 #include <string>
 #include <exception>

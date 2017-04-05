@@ -10,6 +10,7 @@
 *   Реализация MyIterator
 */
 
+
 template<typename T>
 class MyIterator: public std::iterator<std::input_iterator_tag, T>
 {

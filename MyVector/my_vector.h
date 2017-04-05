@@ -10,6 +10,7 @@
 *   Реализация динамического массива
 */
 
+
 #ifndef __MY_VECTOR_H__
 #define __MY_VECTOR_H__
 

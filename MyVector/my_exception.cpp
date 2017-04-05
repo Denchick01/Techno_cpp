@@ -11,6 +11,7 @@
 
 #include "my_exception.hpp"
 
+
 namespace mcr {
 
 ///Конструктор
@@ -53,7 +54,7 @@ std::string MyException::what()
         ss << "exception: " << it << "\n";
         ss << m_exc_stack[it].what_that() << "\n";
     }
-    msg += ss.str();
+    return msg += ss.str();
 }
 
 ///Оператор сравнения

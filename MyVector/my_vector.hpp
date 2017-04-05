@@ -12,6 +12,7 @@
 
 namespace mcr {
 
+
 ///Вывод структуры вектора на экран
 template <typename T> 
 inline void MyVector<T>::show_v(std::ostream &output) const
@@ -114,13 +115,14 @@ MyVector<T>::insert(typename MyVector<T>::iterator pos, InputIt first, InputIt l
     size_t count = 0;
     for (InputIt it(first); it < last; ++it) 
         ++count;
-
-    const  size_t first_pos = pos - begin();
+    const size_t first_pos = pos - begin();
     resize(count + m_size);
 
-    for (iterator it{end() - 1}; it >= (begin() + first_pos); --it) 
+    
+
+    for (iterator it{end() - 1 - count}; it >= (begin() + first_pos); --it){ 
         *(it + count) = *it;
-   
+    }
     for (size_t t_count = 0; t_count < count; ++t_count)
         *((begin() + first_pos) + t_count) = *(first++);
 
